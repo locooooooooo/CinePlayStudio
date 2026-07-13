@@ -1,0 +1,24 @@
+appId: com.gameeditor.desktop
+productName: GameEditor
+electronDist: node_modules/electron/dist
+directories:
+  output: release
+asar: true
+files:
+  - dist/renderer/**
+  - out/main/**
+  - out/preload/**
+  - package.json
+extraResources:
+  - from: build-resources/bin/win32-x64
+    to: bin
+    filter:
+      - "*.exe"
+      - "LICENSE*"
+win:
+  target:
+    - nsis
+  artifactName: "${productName}-${version}-Setup.${ext}"
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

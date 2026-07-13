@@ -1,0 +1,6 @@
+{
+  "name": "Interactive Cinematic Movie Editor Workstation",
+  "description": "PC-compatible Web Multi-track Timeline Interactive Cinematic Film Editor & Custom Asset Plugin System",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

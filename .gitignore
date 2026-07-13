@@ -1,0 +1,14 @@
+node_modules/
+build/
+build-resources/bin/
+dist/
+out/
+release/
+coverage/
+.workbuddy/
+.DS_Store
+*.log
+*.zip
+*.tsbuildinfo
+.env*
+!.env.example
