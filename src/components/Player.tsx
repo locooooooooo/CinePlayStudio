@@ -8,7 +8,6 @@ import {
 import {
   Play,
   Pause,
-  AlertCircle,
   Sparkles,
   Zap,
   Lock,
@@ -19,6 +18,14 @@ import {
   Repeat,
 } from "lucide-react";
 
+type PlayerVariableValue = ProjectVariable["value"];
+
+const addVariableValue = (
+  value: PlayerVariableValue | undefined,
+  increment: number,
+): PlayerVariableValue =>
+  typeof value === "string" ? value + increment : Number(value) + increment;
+
 interface PlayerProps {
   scene: SceneNode;
   tracks: TimelineTrack[];
@@ -28,7 +35,7 @@ interface PlayerProps {
   onPlayToggle: () => void;
   onSelectScene: (sceneId: string) => void;
   variables: ProjectVariable[];
-  onUpdateVariable: (name: string, value: any) => void;
+  onUpdateVariable: (name: string, value: PlayerVariableValue) => void;
   plugins: EditorPlugin[];
   isTransitioning: boolean;
   setIsTransitioning: (val: boolean) => void;
@@ -70,12 +77,12 @@ export default function Player({
   } | null>(null);
 
   // Variables mapped as a quick key-value map for fast conditions evaluation
-  const variablesMap = variables.reduce(
+  const variablesMap = variables.reduce<Record<string, PlayerVariableValue>>(
     (acc, v) => {
       acc[v.name] = v.value;
       return acc;
     },
-    {} as Record<string, any>,
+    {},
   );
 
   // Helper to evaluate string conditions like "hackingLevel >= 2"
@@ -190,8 +197,14 @@ export default function Player({
           prev ? { ...prev, resolved: true, success: true } : null,
         );
         // Execute reward logic
-        onUpdateVariable("hackingLevel", variablesMap["hackingLevel"] + 1);
-        onUpdateVariable("credits", variablesMap["credits"] + 20);
+        onUpdateVariable(
+          "hackingLevel",
+          addVariableValue(variablesMap["hackingLevel"], 1),
+        );
+        onUpdateVariable(
+          "credits",
+          addVariableValue(variablesMap["credits"], 20),
+        );
       }
     };
 

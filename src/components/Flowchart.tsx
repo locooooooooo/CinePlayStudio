@@ -21,13 +21,13 @@ import {
   useNodesState,
   useEdgesState,
 } from "@xyflow/react";
+import type { NodeProps, OnNodeDrag } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { SceneNode, Choice, TimelineTrack } from "../types";
+import { SceneNode, Choice, TimelineTrack, ProjectVariable } from "../types";
 import {
   Play,
   Plus,
   Trash2,
-  GitFork,
   ZoomIn,
   ZoomOut,
   Maximize,
@@ -36,14 +36,7 @@ import {
   MousePointer,
   Compass,
   Search,
-  CheckCircle2,
-  Clock,
   Sparkles,
-  Award,
-  Database,
-  Eye,
-  Settings,
-  HelpCircle,
   TrendingUp,
   Workflow,
   Video,
@@ -58,11 +51,28 @@ interface FlowchartProps {
   onUpdateScenePosition: (id: string, x: number, y: number) => void;
   onUpdateScene: (id: string, fields: Partial<SceneNode>) => void;
   timelines?: Record<string, TimelineTrack[]>;
-  variables?: any[];
+  variables?: ProjectVariable[];
 }
 
+type SceneStatus = NonNullable<SceneNode["status"]>;
+
+interface SceneNodeData extends Record<string, unknown> {
+  scene: SceneNode;
+  isActive: boolean;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
+  onUpdateScene: (id: string, fields: Partial<SceneNode>) => void;
+  isOnlyNode: boolean;
+}
+
+type SceneFlowNode = Node<SceneNodeData, "sceneNode">;
+
 // Node Status presets and helpers
-const STATUS_PRESETS = [
+const STATUS_PRESETS: ReadonlyArray<{
+  value: SceneStatus;
+  label: string;
+  color: string;
+}> = [
   {
     value: "in_progress",
     label: "🟡 编辑中",
@@ -90,7 +100,7 @@ const STATUS_PRESETS = [
   },
 ];
 
-const getStatusBadge = (status?: string) => {
+const getStatusBadge = (status?: SceneStatus) => {
   const preset =
     STATUS_PRESETS.find((p) => p.value === status) || STATUS_PRESETS[0];
   return preset;
@@ -99,7 +109,7 @@ const getStatusBadge = (status?: string) => {
 // ==========================================
 // CUSTOM NODE COMPONENT (Highly polished card with status and Choice tree)
 // ==========================================
-const SceneCustomNode = memo(({ data }: any) => {
+const SceneCustomNode = memo(({ data }: NodeProps<SceneFlowNode>) => {
   const { scene, isActive, onSelect, onDelete, onUpdateScene, isOnlyNode } =
     data;
   const [isEditingName, setIsEditingName] = useState(false);
@@ -133,9 +143,9 @@ const SceneCustomNode = memo(({ data }: any) => {
     onUpdateScene(scene.id, { choices: [...scene.choices, newChoice] });
   };
 
-  const handleStatusChange = (statusVal: string, e: React.MouseEvent) => {
+  const handleStatusChange = (statusVal: SceneStatus, e: React.MouseEvent) => {
     e.stopPropagation();
-    onUpdateScene(scene.id, { status: statusVal as any });
+    onUpdateScene(scene.id, { status: statusVal });
     setShowStatusDropdown(false);
   };
 
@@ -475,12 +485,12 @@ function FlowchartContent({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<SceneFlowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   // Sync xyflow nodes from scenes
   useEffect(() => {
-    const formattedNodes = scenes.map((scene) => ({
+    const formattedNodes: SceneFlowNode[] = scenes.map((scene) => ({
       id: scene.id,
       type: "sceneNode",
       position: scene.position,
@@ -545,8 +555,8 @@ function FlowchartContent({
   }, [scenes, activeSceneId, setEdges]);
 
   // Handle Dragging Node stop
-  const handleNodeDragStop = useCallback(
-    (_event: any, node: Node) => {
+  const handleNodeDragStop: OnNodeDrag<SceneFlowNode> = useCallback(
+    (_event, node) => {
       onUpdateScenePosition(node.id, node.position.x, node.position.y);
     },
     [onUpdateScenePosition],
@@ -584,7 +594,7 @@ function FlowchartContent({
 
   // Context Menu triggers
   const onNodeContextMenu = useCallback(
-    (event: React.MouseEvent, node: Node) => {
+    (event: React.MouseEvent, node: SceneFlowNode) => {
       event.preventDefault();
       setContextMenu({
         x: event.clientX,

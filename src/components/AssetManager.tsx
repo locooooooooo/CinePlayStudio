@@ -9,40 +9,36 @@ import {
   ToggleRight,
   Code,
   PlayCircle,
-  Eye,
   Check,
-  AlertTriangle,
   Layers,
   Database,
   Folder,
   FolderOpen,
-  Tag,
   ChevronRight,
-  ChevronDown,
   Search,
   MoreVertical,
   Copy,
   Edit,
   X,
-  Download,
   Info,
-  Sparkles,
-  Move,
   FileText,
   Music,
   Film,
   Image as ImageIcon,
-  HelpCircle,
   Archive,
   CheckSquare,
   Square,
-  Repeat,
-  RefreshCw,
   LayoutGrid,
   List,
   Columns,
   Maximize2,
 } from "lucide-react";
+
+type ProjectVariableValue = boolean | number | string;
+type AssetGroup = "none" | "type" | "folder";
+
+const isAssetGroup = (value: string): value is AssetGroup =>
+  value === "none" || value === "type" || value === "folder";
 
 interface AssetManagerProps {
   assets: MediaAsset[];
@@ -55,7 +51,7 @@ interface AssetManagerProps {
   variables: ProjectVariable[];
   onAddVariable: (variable: ProjectVariable) => void;
   onDeleteVariable: (id: string) => void;
-  onUpdateVariableValue: (id: string, value: any) => void;
+  onUpdateVariableValue: (id: string, value: ProjectVariableValue) => void;
 }
 
 export default function AssetManager({
@@ -139,11 +135,11 @@ export default function AssetManager({
   const [selectedFolderId, setSelectedFolderId] = useState<string>("all"); // 'all', 'video', 'audio', 'document', 'image', or 'f-xxx'
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [groupBy, setGroupBy] = useState<"none" | "type" | "folder">("none");
+  const [groupBy, setGroupBy] = useState<AssetGroup>("none");
   const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(true);
   const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
-  const [dragEnterCount, setDragEnterCount] = useState(0);
+  const [, setDragEnterCount] = useState(0);
 
   // View modes and zoom size settings (满足用户: 当前文件需要支持不同视图，缩小，预览，大图等等排布方式)
   const [viewMode, setViewMode] = useState<"grid" | "list" | "split">("grid");
@@ -537,7 +533,7 @@ export default function AssetManager({
     selectedAssetIds.forEach((id) => {
       const asset = enrichedAssets.find((a) => a.id === id);
       if (asset) {
-        let currentTags = asset.tags ? [...asset.tags] : [];
+        const currentTags = asset.tags ? [...asset.tags] : [];
         if (!currentTags.includes(tagName)) {
           currentTags.push(tagName);
           onUpdateAsset({ ...asset, tags: currentTags });
@@ -558,7 +554,7 @@ export default function AssetManager({
       "cyber_",
     );
     if (prefix === null) return;
-    selectedAssetIds.forEach((id, idx) => {
+    selectedAssetIds.forEach((id) => {
       const asset = enrichedAssets.find((a) => a.id === id);
       if (asset) {
         onUpdateAsset({ ...asset, name: `${prefix}${asset.name}` });
@@ -642,10 +638,11 @@ export default function AssetManager({
         ...prev,
         `[Plugin compiler] ✓ 插件 "${selectedPlugin.name}" 代码热重载成功！语法验证通过。`,
       ]);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
       setPluginConsoleLogs((prev) => [
         ...prev,
-        `[Plugin compiler] ✗ 插件编译失败: ${err.message}`,
+        `[Plugin compiler] ✗ 插件编译失败: ${message}`,
       ]);
     }
   };
@@ -710,7 +707,7 @@ function onRender(variables) {
       alert("已存在同名全局变量！");
       return;
     }
-    let parsedValue: any = newVarVal;
+    let parsedValue: ProjectVariableValue = newVarVal;
     if (newVarType === "boolean") {
       parsedValue = newVarVal === "true";
     } else if (newVarType === "number") {
@@ -739,19 +736,6 @@ function onRender(variables) {
         return <ImageIcon className="w-4 h-4 text-pink-400" />;
       default:
         return <FileText className="w-4 h-4 text-amber-400" />;
-    }
-  };
-
-  const getLargeFileIcon = (type: string) => {
-    switch (type) {
-      case "video":
-        return <Film className="w-7 h-7 text-sky-400" />;
-      case "audio":
-        return <Music className="w-7 h-7 text-emerald-400" />;
-      case "image":
-        return <ImageIcon className="w-7 h-7 text-pink-400" />;
-      default:
-        return <FileText className="w-7 h-7 text-amber-400" />;
     }
   };
 
@@ -913,7 +897,6 @@ function onRender(variables) {
       );
     }
 
-    const isLarge = true;
     return (
       <div
         key={asset.id}
@@ -1218,7 +1201,11 @@ function onRender(variables) {
               {/* Group selection dropdown */}
               <select
                 value={groupBy}
-                onChange={(e) => setGroupBy(e.target.value as any)}
+                onChange={(e) => {
+                  if (isAssetGroup(e.target.value)) {
+                    setGroupBy(e.target.value);
+                  }
+                }}
                 className="bg-slate-950 border border-slate-800 text-slate-400 text-[10px] rounded-lg px-2 py-2 outline-none cursor-pointer focus:border-amber-500/50"
                 title="资产分组视图"
               >

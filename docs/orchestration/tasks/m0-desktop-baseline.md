@@ -3,7 +3,7 @@
 ⟦tag:v2|task|m0-desktop-baseline⟧
 
 - objective: establish a secure Electron build baseline and packaged FFprobe proof while preserving the current React UI
-- state: partial
+- state: verified
 - milestone: M0
 - truth source: `docs/pc-desktop-porting-technical-plan.md`, sections 3, 6, 13, 15, 16
 
@@ -41,6 +41,13 @@
 - Closed M0-targeted lint and format checks without changing business source.
 - outcome: verified.
 
+### M0-F Legacy Lint Closure
+
+- Split the 124-error baseline across three non-overlapping short-worker lanes.
+- Reduced all full-repo lint errors to zero without rule suppression or configuration weakening.
+- Passed full lint, typecheck, format, tests, build, semantic review, and diff checks.
+- outcome: verified on 2026-07-13.
+
 ## Acceptance
 
 - All three callbacks respect file locks.
@@ -50,5 +57,5 @@
 
 ## Next Action
 
-- Do not dispatch M1.
-- Open a bounded legacy-lint baseline lane, or record an explicit accepted-residual-risk waiver for the 124 lint errors. Full-repo formatting is clean.
+- Commit the verified M0-F closure and verify the resulting commit.
+- Do not dispatch M1 within the M0 submission.

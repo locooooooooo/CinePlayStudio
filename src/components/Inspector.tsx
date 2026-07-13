@@ -5,22 +5,20 @@ import {
   Info,
   Type,
   Clock,
-  Sliders,
   Trash2,
-  Plus,
   GitBranch,
   Edit3,
   Video,
   ChevronDown,
   ChevronRight,
   Database,
-  Trophy,
   Camera,
   Sparkles,
   Volume2,
-  Music,
   Code,
 } from "lucide-react";
+
+type PluginConfigValue = string | number | boolean;
 
 interface InspectorProps {
   selectedClip: TimelineClip | null;
@@ -30,7 +28,7 @@ interface InspectorProps {
   onUpdateClipContent: (
     trackId: string,
     clipId: string,
-    updatedContent: any,
+    updatedContent: TimelineClip["content"],
   ) => void;
   onUpdateClipTitle: (trackId: string, clipId: string, title: string) => void;
   onUpdateScene?: (sceneId: string, updatedFields: Partial<SceneNode>) => void;
@@ -82,7 +80,7 @@ export default function Inspector({
     );
   };
 
-  const handlePluginConfigChange = (key: string, value: any) => {
+  const handlePluginConfigChange = (key: string, value: PluginConfigValue) => {
     if (!selectedClip || !selectedTrackId) return;
     const currentConfig = selectedClip.content.pluginConfig || {};
     onUpdateClipContent(selectedTrackId, selectedClip.id, {
@@ -139,7 +137,12 @@ export default function Inspector({
   };
 
   // Direct content editors
-  const handleDirectPropertyChange = (key: string, value: any) => {
+  const handleDirectPropertyChange = <
+    Key extends keyof TimelineClip["content"],
+  >(
+    key: Key,
+    value: TimelineClip["content"][Key],
+  ) => {
     if (!selectedClip || !selectedTrackId) return;
     onUpdateClipContent(selectedTrackId, selectedClip.id, {
       ...selectedClip.content,

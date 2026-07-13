@@ -96,7 +96,7 @@ export default function ProjectManager({
         JSON.parse(content);
         onImportProject(content);
         if (fileInputRef.current) fileInputRef.current.value = "";
-      } catch (err) {
+      } catch {
         alert("无效的 JSON 项目文件，请检查文件格式。");
       }
     };

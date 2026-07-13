@@ -8,7 +8,7 @@
 - thread id: `/root`
 - worker state: archived
 - current gate: none; M0 technical acceptance complete
-- outcome: partial at task level because full-repo quality gates remain red
+- outcome: verified after M0-F legacy lint closure
 
 ## Completed
 
@@ -19,6 +19,7 @@
 - Passed dev and packaged Playwright Electron smoke with nonblank 1424x835 windows and `gameEditor.app.getInfo()`.
 - Rejected an initial dev smoke because port 5173 belonged to another workspace; reran GameEditor on the isolated 5193 server and captured the correct CineFlow Renderer evidence.
 - Established and verified a full-repo Prettier baseline before the initial Git commit.
+- Absorbed all three M0-F callbacks and verified full lint, typecheck, format, tests, build, semantic diff review, and suppression scans.
 
 ## Evidence
 
@@ -34,9 +35,8 @@
 
 ## Incomplete
 
-- Full `npm run lint`: 124 legacy errors outside the M0 desktop surface.
-- Full `npm run format:check`: resolved; now passes.
+- none
 
 ## Next Action
 
-- Keep M1 closed until the 124-error legacy lint baseline is resolved or explicitly waived as accepted residual risk.
+- Commit and verify M0-F before opening any M1 dispatch.

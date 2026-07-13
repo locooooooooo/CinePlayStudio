@@ -13,6 +13,7 @@ import {
   EditorPlugin,
   ProjectVariable,
   TimelineClip,
+  Choice,
 } from "./types";
 import Flowchart from "./components/Flowchart";
 import Timeline from "./components/Timeline";
@@ -28,24 +29,96 @@ import {
   Download,
   HelpCircle,
   GitBranch,
-  Video,
   Monitor,
   Layout,
   RefreshCw,
   Cpu,
-  Layers,
   Flame,
   CheckCircle,
   X,
-  Plus,
   Film,
   FolderOpen,
   Cloud,
-  Save,
   Edit3,
   Check,
   AlertCircle,
 } from "lucide-react";
+
+interface ProjectMeta {
+  id: string;
+  name: string;
+  lastModified: number;
+  sceneCount: number;
+  thumbnail?: string;
+}
+
+interface ProjectDocument {
+  id: string;
+  name: string;
+  lastModified: number;
+  scenes: SceneNode[];
+  timelines: Record<string, TimelineTrack[]>;
+  assets: MediaAsset[];
+  plugins: EditorPlugin[];
+  variables: ProjectVariable[];
+}
+
+interface ImportedScene extends SceneNode {
+  timelineTracks?: TimelineTrack[];
+}
+
+interface ImportedProject {
+  projectName?: string;
+  name?: string;
+  scenes?: ImportedScene[];
+  timelines?: Record<string, TimelineTrack[]>;
+  timelineTracks?: Record<string, TimelineTrack[]>;
+  assets?: MediaAsset[];
+  plugins?: EditorPlugin[];
+  variables?: ProjectVariable[];
+  globalVariables?: ProjectVariable[];
+}
+
+interface ParsedVariable {
+  id?: string;
+  name: string;
+  type: string;
+  value: unknown;
+}
+
+interface ParsedScene {
+  id: string;
+  name: string;
+  videoUrl: string;
+  duration?: number;
+  thumbnail?: string;
+  description?: string;
+  position?: SceneNode["position"];
+  choices?: Choice[];
+}
+
+interface ParsedTimelineClip {
+  id: string;
+  title: string;
+  startTime: number;
+  duration: number;
+  color?: string;
+  content?: TimelineClip["content"];
+}
+
+interface ParsedTimelineTrack {
+  id: string;
+  name: string;
+  type: TimelineTrack["type"];
+  clips: ParsedTimelineClip[];
+}
+
+interface ParsedScriptData {
+  projectName: string;
+  variables: ParsedVariable[];
+  scenes: ParsedScene[];
+  timelines: Array<{ sceneId: string; tracks: ParsedTimelineTrack[] }>;
+}
 
 export default function App() {
   // Core Application States
@@ -60,7 +133,7 @@ export default function App() {
   // Project Management States
   const [projectName, setProjectName] = useState<string>("赛步影游剧本");
   const [currentProjectId, setCurrentProjectId] = useState<string>("");
-  const [projectsMeta, setProjectsMeta] = useState<any[]>([]);
+  const [projectsMeta, setProjectsMeta] = useState<ProjectMeta[]>([]);
   const [showProjectManager, setShowProjectManager] = useState<boolean>(false);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">(
     "saved",
@@ -113,7 +186,7 @@ export default function App() {
 
   // 1a. Load initial project list & active project detail on mount
   useEffect(() => {
-    let metaList: any[] = [];
+    let metaList: ProjectMeta[] = [];
     try {
       const storedMeta = localStorage.getItem("cineflow_projects_meta");
       if (storedMeta) {
@@ -326,7 +399,7 @@ export default function App() {
 
   const handleCreateProject = (type: "blank" | "template") => {
     const newId = `project-${Date.now()}`;
-    let newProject: any;
+    let newProject: ProjectDocument;
 
     if (type === "blank") {
       const blankSceneId = `scene-1`;
@@ -538,7 +611,7 @@ export default function App() {
 
   const handleImportProject = (projectJSON: string) => {
     try {
-      const data = JSON.parse(projectJSON);
+      const data: ImportedProject = JSON.parse(projectJSON);
       const newId = `project-${Date.now()}`;
 
       const newProject = {
@@ -558,7 +631,7 @@ export default function App() {
         Object.keys(newProject.timelines).length === 0
       ) {
         const parsedTimelines: Record<string, TimelineTrack[]> = {};
-        data.scenes.forEach((sc: any) => {
+        data.scenes.forEach((sc) => {
           if (sc.timelineTracks) {
             parsedTimelines[sc.id] = sc.timelineTracks;
           }
@@ -589,7 +662,7 @@ export default function App() {
       handleSelectProject(newId);
       setShowProjectManager(false);
       alert("项目文件导入成功！已自动加载。");
-    } catch (err) {
+    } catch {
       alert("导入失败，请确保 JSON 文件包含标准的 CineFlow 工作站属性。");
     }
   };
@@ -786,7 +859,7 @@ export default function App() {
     const newId = `clip-added-${Date.now()}`;
     let title = "新片段";
     let color = "bg-blue-600/30 text-blue-300 border-blue-500";
-    let content: any = {};
+    let content: TimelineClip["content"] = {};
 
     if (track.type === "subtitle") {
       title = "双语字幕内容";
@@ -901,7 +974,7 @@ export default function App() {
   const handleUpdateClipContent = (
     trackId: string,
     clipId: string,
-    updatedContent: any,
+    updatedContent: TimelineClip["content"],
   ) => {
     setTimelines((prev) => {
       const currentSceneTracks = prev[activeSceneId] || [];
@@ -1008,13 +1081,19 @@ export default function App() {
     setVariables((prev) => prev.filter((v) => v.id !== id));
   };
 
-  const handleUpdateVariableValue = (id: string, value: any) => {
+  const handleUpdateVariableValue = (
+    id: string,
+    value: ProjectVariable["value"],
+  ) => {
     setVariables((prev) =>
       prev.map((v) => (v.id === id ? { ...v, value } : v)),
     );
   };
 
-  const handleUpdateVariableByName = (name: string, value: any) => {
+  const handleUpdateVariableByName = (
+    name: string,
+    value: ProjectVariable["value"],
+  ) => {
     setVariables((prev) =>
       prev.map((v) => (v.name === name ? { ...v, value } : v)),
     );
@@ -1039,12 +1118,7 @@ export default function App() {
     return JSON.stringify(projectSchema, null, 2);
   };
 
-  const handleApplyParsedData = (parsedData: {
-    projectName: string;
-    variables: any[];
-    scenes: any[];
-    timelines: any[];
-  }) => {
+  const handleApplyParsedData = (parsedData: ParsedScriptData) => {
     // 1. Update Project Variables
     const newVars = parsedData.variables.map((v, index) => ({
       id: v.id || `v-ai-${index}`,
@@ -1060,7 +1134,7 @@ export default function App() {
     setVariables(newVars);
 
     // 2. Update Scenes List
-    const newScenes = parsedData.scenes.map((scene: any) => ({
+    const newScenes = parsedData.scenes.map((scene) => ({
       id: scene.id,
       name: scene.name,
       videoUrl: scene.videoUrl,
@@ -1076,12 +1150,12 @@ export default function App() {
 
     // 3. Update Timelines Map
     const newTimelines: Record<string, TimelineTrack[]> = {};
-    parsedData.timelines.forEach((tData: any) => {
-      newTimelines[tData.sceneId] = tData.tracks.map((track: any) => ({
+    parsedData.timelines.forEach((tData) => {
+      newTimelines[tData.sceneId] = tData.tracks.map((track) => ({
         id: track.id,
         name: track.name,
-        type: track.type as any,
-        clips: track.clips.map((clip: any) => ({
+        type: track.type,
+        clips: track.clips.map((clip) => ({
           id: clip.id,
           title: clip.title,
           startTime: clip.startTime,

@@ -1,23 +1,29 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-13T07:26:10Z",
+  "updated_at": "2026-07-13T08:43:40Z",
   "source": {
     "index": "docs/orchestration/index.md",
     "board": "docs/orchestration/current-dispatch-shortlist.md",
-    "tasks": ["⟦tag:v2|task|m0-desktop-baseline⟧"],
+    "tasks": [
+      "⟦tag:v2|task|m0-desktop-baseline⟧",
+      "⟦tag:v2|task|m0-legacy-lint-baseline⟧"
+    ],
     "sessions": [
       "⟦tag:v2|session|m0-architecture-owner-01⟧",
       "⟦tag:v2|session|m0-build-release-01⟧",
       "⟦tag:v2|session|m0-desktop-shell-01⟧",
       "⟦tag:v2|session|m0-acceptance-recovery-01⟧",
       "⟦tag:v2|session|m0-acceptance-recovery-02⟧",
-      "⟦tag:v2|session|m0-pm-acceptance-01⟧"
+      "⟦tag:v2|session|m0-pm-acceptance-01⟧",
+      "⟦tag:v2|session|m0-lint-core-01⟧",
+      "⟦tag:v2|session|m0-lint-assets-flow-01⟧",
+      "⟦tag:v2|session|m0-lint-media-ui-01⟧"
     ]
   },
   "loop_state": "summarized",
   "dispatch_state": "standby",
   "active_gate": null,
-  "next_dispatch_guard": "resolve or explicitly waive the legacy full-repo lint gate before M1",
+  "next_dispatch_guard": "keep M1 closed until the verified M0-F submission is committed and the commit is verified",
   "workers": [
     {
       "identity": "[长工]#架构安全@M0",
@@ -43,6 +49,45 @@
       "current_gate": null,
       "retention_reason": null,
       "last_verified_activity": "2026-07-13T06:58:50Z",
+      "next_review": null
+    },
+    {
+      "identity": "[短工]#核心数据Lint@M0",
+      "thread_id": "/root/m0_lint_core",
+      "role": "short-worker",
+      "module": "lint-core-data",
+      "state": "archived",
+      "task_tag": "⟦tag:v2|task|m0-legacy-lint-baseline⟧",
+      "session_tag": "⟦tag:v2|session|m0-lint-core-01⟧",
+      "current_gate": null,
+      "retention_reason": null,
+      "last_verified_activity": "2026-07-13T08:40:17Z",
+      "next_review": null
+    },
+    {
+      "identity": "[短工]#资产流程Lint@M0",
+      "thread_id": "/root/m0_lint_assets_flow",
+      "role": "short-worker",
+      "module": "lint-assets-flow",
+      "state": "archived",
+      "task_tag": "⟦tag:v2|task|m0-legacy-lint-baseline⟧",
+      "session_tag": "⟦tag:v2|session|m0-lint-assets-flow-01⟧",
+      "current_gate": null,
+      "retention_reason": null,
+      "last_verified_activity": "2026-07-13T08:40:17Z",
+      "next_review": null
+    },
+    {
+      "identity": "[短工]#媒体界面Lint@M0",
+      "thread_id": "/root/m0_lint_media_ui",
+      "role": "short-worker",
+      "module": "lint-media-ui",
+      "state": "archived",
+      "task_tag": "⟦tag:v2|task|m0-legacy-lint-baseline⟧",
+      "session_tag": "⟦tag:v2|session|m0-lint-media-ui-01⟧",
+      "current_gate": null,
+      "retention_reason": null,
+      "last_verified_activity": "2026-07-13T08:40:17Z",
       "next_review": null
     },
     {
@@ -98,7 +143,8 @@
       "next_review": null
     }
   ],
-  "blockers": [
-    "full npm run lint has 124 legacy errors outside the M0 desktop surface"
+  "blockers": [],
+  "workspace_notes": [
+    "concurrently created, untracked docs/releases/** is outside all M0-F file locks and excluded from this submission"
   ]
 }

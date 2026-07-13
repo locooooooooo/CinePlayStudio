@@ -1,26 +1,50 @@
 import React, { useState } from "react";
+import { SceneNode, TimelineTrack } from "../types";
 import {
   Sparkles,
   X,
   Copy,
-  Play,
   Check,
   AlertTriangle,
-  RefreshCw,
   FileText,
   Settings,
   ShieldCheck,
-  HelpCircle,
 } from "lucide-react";
+
+interface ParsedVariable {
+  id?: string;
+  name: string;
+  type: string;
+  value: unknown;
+}
+
+interface ParsedTimeline {
+  sceneId: string;
+  tracks: TimelineTrack[];
+}
+
+interface ParsedProjectData {
+  projectName: string;
+  variables: ParsedVariable[];
+  scenes: SceneNode[];
+  timelines: ParsedTimeline[];
+}
+
+type ParseScriptResponse =
+  | {
+      success: true;
+      data: ParsedProjectData;
+      engine?: string;
+      warning?: string;
+    }
+  | { success: false; error?: string };
+
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : String(error);
 
 interface ScriptDecomposerProps {
   onClose: () => void;
-  onApplyParsedData: (parsedData: {
-    projectName: string;
-    variables: any[];
-    scenes: any[];
-    timelines: any[];
-  }) => void;
+  onApplyParsedData: (parsedData: ParsedProjectData) => void;
 }
 
 // Preset Screenplay templates
@@ -170,7 +194,9 @@ export default function ScriptDecomposer({
   // Parse state tracker
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [parsedResult, setParsedResult] = useState<any | null>(null);
+  const [parsedResult, setParsedResult] = useState<ParsedProjectData | null>(
+    null,
+  );
   const [engineUsed, setEngineUsed] = useState<string>("");
   const [warningMsg, setWarningMsg] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -223,7 +249,7 @@ export default function ScriptDecomposer({
         throw new Error("服务器解析接口返回错误 / API response failure");
       }
 
-      const resData = await response.json();
+      const resData: ParseScriptResponse = await response.json();
       clearInterval(interval);
       setCurrentStep(steps.length - 1);
 
@@ -236,20 +262,21 @@ export default function ScriptDecomposer({
             setWarningMsg(resData.warning);
           }
         } else {
-          throw new Error(resData.error || "数据解析结构损坏");
+          const errorMessage = "error" in resData ? resData.error : undefined;
+          throw new Error(errorMessage || "数据解析结构损坏");
         }
         setIsLoading(false);
       }, 600);
-    } catch (err: any) {
+    } catch (err: unknown) {
       clearInterval(interval);
       console.error("AI decomposer failed:", err);
       setIsLoading(false);
       // Fallback
       setWarningMsg(
-        `AI接口连接失败 (${err.message})。系统已自动调用高精度启发式编译器，为您生成完整架构。`,
+        `AI接口连接失败 (${getErrorMessage(err)})。系统已自动调用高精度启发式编译器，为您生成完整架构。`,
       );
       // Simulating a parser manually based on heuristic
-      const mockResult = {
+      const mockResult: ParsedProjectData = {
         projectName: "启发式智能剧本",
         variables: [
           { id: "v_h1", name: "trustLevel", type: "number", value: 50 },
@@ -645,7 +672,7 @@ export default function ScriptDecomposer({
                     </span>
                   </h4>
                   <div className="grid grid-cols-2 gap-2">
-                    {parsedResult.variables?.map((v: any, idx: number) => (
+                    {parsedResult.variables?.map((v, idx: number) => (
                       <div
                         key={idx}
                         className="bg-slate-900/80 border border-slate-800 p-2 rounded-lg flex items-center justify-between text-xs font-mono"
@@ -675,15 +702,12 @@ export default function ScriptDecomposer({
                   </h4>
 
                   <div className="flex-1 flex flex-col gap-2 overflow-y-auto pr-1">
-                    {parsedResult.scenes?.map((scene: any, idx: number) => {
+                    {parsedResult.scenes?.map((scene, idx: number) => {
                       const timeline = parsedResult.timelines?.find(
-                        (t: any) => t.sceneId === scene.id,
+                        (t) => t.sceneId === scene.id,
                       );
                       const subtitleTrack = timeline?.tracks?.find(
-                        (tr: any) => tr.type === "subtitle",
-                      );
-                      const triggerTrack = timeline?.tracks?.find(
-                        (tr: any) => tr.type === "trigger",
+                        (tr) => tr.type === "subtitle",
                       );
 
                       return (
@@ -731,7 +755,7 @@ export default function ScriptDecomposer({
                               <span className="text-[9px] uppercase font-mono text-amber-500 font-semibold tracking-wider">
                                 剧情支线及触发逻辑
                               </span>
-                              {scene.choices.map((c: any, cIdx: number) => (
+                              {scene.choices.map((c, cIdx: number) => (
                                 <div
                                   key={cIdx}
                                   className="bg-slate-950/80 px-2 py-1.5 rounded border border-slate-800/50 flex items-center justify-between text-[10px]"

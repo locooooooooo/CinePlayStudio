@@ -13,9 +13,9 @@ import {
   TableRow,
   TableCell,
   WidthType,
-  BorderStyle,
 } from "docx";
 import JSZip from "jszip";
+import type { ProjectVariable, SceneNode, TimelineTrack } from "./src/types";
 
 dotenv.config();
 
@@ -23,6 +23,24 @@ const app = express();
 app.use(express.json({ limit: "15mb" }));
 
 const PORT = 3000;
+
+function getErrorMessage(error: unknown): unknown {
+  if (typeof error === "object" && error !== null && "message" in error) {
+    return error.message;
+  }
+  return undefined;
+}
+
+interface ParsedScriptResult {
+  projectName: string;
+  variables: ProjectVariable[];
+  scenes: SceneNode[];
+  timelines: Array<{ sceneId: string; tracks: TimelineTrack[] }>;
+}
+
+interface CustomAgentResponse {
+  choices?: Array<{ message?: { content?: string } }>;
+}
 
 // Hardcoded sample asset URLs to map for media clips
 const VIDEO_ASSETS = [
@@ -55,9 +73,12 @@ const VIDEO_ASSETS = [
 // Helper to do high-fidelity regex fallback parsing when AI key is missing or offline
 function fallbackParseScript(scriptText: string) {
   // Simple heuristic parsing to turn a textual screenplay/script into interactive scenes
-  const scenesList: any[] = [];
-  const timelinesList: any[] = [];
-  const variablesList: any[] = [
+  const scenesList: SceneNode[] = [];
+  const timelinesList: Array<{
+    sceneId: string;
+    tracks: TimelineTrack[];
+  }> = [];
+  const variablesList: ProjectVariable[] = [
     { id: "v1", name: "trustLevel", type: "number", value: 50 },
     { id: "v2", name: "hasKeycard", type: "boolean", value: false },
     { id: "v3", name: "alarmTriggered", type: "boolean", value: false },
@@ -283,7 +304,7 @@ function fallbackParseScript(scriptText: string) {
     const headerLine = lines[0] || `场景_${idx + 1}`;
 
     // Extract scene name
-    const sceneName = headerLine.replace(/[\[\]]/g, "").trim();
+    const sceneName = headerLine.replaceAll("[", "").replaceAll("]", "").trim();
     const sceneId = `ai-scene-${idx + 1}`;
 
     // Description is the combination of narrative lines
@@ -344,7 +365,7 @@ function fallbackParseScript(scriptText: string) {
     });
 
     // Create corresponding TimelineTracks
-    const videoTrack = {
+    const videoTrack: TimelineTrack = {
       id: `t-vid-${sceneId}`,
       name: "🎥 视频轨道 (Video)",
       type: "video",
@@ -374,14 +395,14 @@ function fallbackParseScript(scriptText: string) {
       };
     });
 
-    const subtitleTrack = {
+    const subtitleTrack: TimelineTrack = {
       id: `t-sub-${sceneId}`,
       name: "💬 字幕轨道 (Subtitle)",
       type: "subtitle",
       clips: subtitleClips,
     };
 
-    const triggerTrack = {
+    const triggerTrack: TimelineTrack = {
       id: `t-trig-${sceneId}`,
       name: "⚡ 交互决断 (Choices)",
       type: "trigger",
@@ -643,10 +664,10 @@ Ensure the choice targetSceneIds refer correctly to other scene ids in the "scen
       });
 
       const jsonString = response.text?.trim() || "";
-      const resultObj = JSON.parse(jsonString);
+      const resultObj: ParsedScriptResult = JSON.parse(jsonString);
 
       // Clean/normalize video urls to ensure playability using local presets
-      resultObj.scenes.forEach((sc: any, index: number) => {
+      resultObj.scenes.forEach((sc, index) => {
         const asset = VIDEO_ASSETS[index % VIDEO_ASSETS.length];
         sc.videoUrl = asset.url;
         sc.thumbnail = asset.thumbnail;
@@ -695,7 +716,7 @@ Ensure the choice targetSceneIds refer correctly to other scene ids in the "scen
         throw new Error(`Custom Agent API returned status ${response.status}`);
       }
 
-      const resJson = await response.json();
+      const resJson: CustomAgentResponse = await response.json();
       const content = resJson.choices?.[0]?.message?.content || "";
       // Strip markdown code blocks if any
       const jsonText = content
@@ -710,7 +731,7 @@ Ensure the choice targetSceneIds refer correctly to other scene ids in the "scen
         data: data,
       });
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("AI script parsing failed:", err);
     // Graceful fallback so the developer workspace never breaks!
     const parsedData = fallbackParseScript(scriptText);
@@ -718,7 +739,7 @@ Ensure the choice targetSceneIds refer correctly to other scene ids in the "scen
       success: true,
       engine: "Fallback Logic Parser (Fail-Safe)",
       data: parsedData,
-      warning: `AI代理解析接口请求失败 (${err.message})，系统已自适应启动离线剧情编译器解析剧本，保留了全套多轨架构。`,
+      warning: `AI代理解析接口请求失败 (${getErrorMessage(err)})，系统已自适应启动离线剧情编译器解析剧本，保留了全套多轨架构。`,
     });
   }
 });
@@ -768,8 +789,6 @@ app.post("/api/media/probe", async (req, res) => {
         "a-vid-1";
       const isSubway = foundKey === "a-vid-1";
       const isHacker = foundKey === "a-vid-2";
-      const isHologram = foundKey === "a-vid-3";
-
       return res.json({
         success: true,
         source: "ffprobe-emulator (Virtual Media Container)",
@@ -799,14 +818,14 @@ app.post("/api/media/probe", async (req, res) => {
         },
       });
     });
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+  } catch (err: unknown) {
+    return res.status(500).json({ error: getErrorMessage(err) });
   }
 });
 
 // 2. COMMERCIAL FFmpeg MULTI-TRACK STITCHING & COMPRESSION PIPELINE
 app.post("/api/media/ffmpeg-pipeline", async (req, res) => {
-  const { operation, tracks, videoSettings } = req.body;
+  const { operation, videoSettings } = req.body;
 
   const selectedCodec = videoSettings?.codec || "libx264";
   const selectedResolution = videoSettings?.resolution || "1920x1080";
@@ -850,7 +869,15 @@ app.post("/api/media/ffmpeg-pipeline", async (req, res) => {
 
 // 3. COMMERCIAL .DOCX SCREENPLAY EXPORT ENGINE (docx SDK Integration)
 app.post("/api/media/export-docx", async (req, res) => {
-  const { projectName, scenes, variables } = req.body;
+  const {
+    projectName,
+    scenes,
+    variables,
+  }: {
+    projectName?: string;
+    scenes?: SceneNode[];
+    variables?: ProjectVariable[];
+  } = req.body;
 
   if (!scenes || !Array.isArray(scenes)) {
     return res.status(400).json({ error: "Missing valid scenes list" });
@@ -952,7 +979,7 @@ app.post("/api/media/export-docx", async (req, res) => {
                   ],
                 }),
                 ...(variables || []).map(
-                  (v: any) =>
+                  (v) =>
                     new TableRow({
                       children: [
                         new TableCell({
@@ -983,7 +1010,7 @@ app.post("/api/media/export-docx", async (req, res) => {
               spacing: { before: 400, after: 120 },
             }),
 
-            ...scenes.flatMap((sc: any, idx: number) => [
+            ...scenes.flatMap((sc, idx) => [
               new Paragraph({
                 children: [
                   new TextRun({
@@ -1069,7 +1096,7 @@ app.post("/api/media/export-docx", async (req, res) => {
                         ],
                       }),
                       ...sc.choices.map(
-                        (ch: any) =>
+                        (ch) =>
                           new TableRow({
                             children: [
                               new TableCell({
@@ -1122,9 +1149,11 @@ app.post("/api/media/export-docx", async (req, res) => {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     );
     return res.send(buffer);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Docx generation failed:", err);
-    return res.status(500).json({ error: `Word文档生成失败: ${err.message}` });
+    return res
+      .status(500)
+      .json({ error: `Word文档生成失败: ${getErrorMessage(err)}` });
   }
 });
 
@@ -1187,11 +1216,11 @@ pause`;
     );
     res.setHeader("Content-Type", "application/zip");
     return res.send(buffer);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Zip generation failed:", err);
     return res
       .status(500)
-      .json({ error: `ZIP资产包生成打包失败: ${err.message}` });
+      .json({ error: `ZIP资产包生成打包失败: ${getErrorMessage(err)}` });
   }
 });
 

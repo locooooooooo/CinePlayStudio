@@ -5,28 +5,19 @@ import {
   Terminal,
   Layers,
   Code2,
-  FileCheck,
   Sparkles,
-  Play,
-  Settings,
   Plus,
   Trash2,
   Download,
   CheckCircle,
-  AlertTriangle,
-  HelpCircle,
-  Clock,
   Briefcase,
   ExternalLink,
-  ChevronRight,
   Database,
   Video,
   FileText,
   FolderArchive,
   Activity,
-  HardDrive,
   Shield,
-  Loader2,
   RefreshCw,
 } from "lucide-react";
 
@@ -45,6 +36,52 @@ interface RequirementItem {
   status: "pending" | "designing" | "implemented";
   target: "Zig Native" | "C++ Engine" | "Vue Bridge";
 }
+
+interface ProbeStream {
+  codecType: string;
+  codecName: string;
+  width?: number;
+  height?: number;
+  frameRate?: string;
+  channels?: number;
+  pixelFormat?: string;
+}
+
+interface ProbeResult {
+  success: true;
+  source: string;
+  metadata: {
+    format: string;
+    duration: number;
+    size: number;
+    bitRate: string;
+    streams: ProbeStream[];
+  };
+}
+
+type ProbeApiResponse = ProbeResult | { success: false; error?: string };
+
+interface FfmpegPipelineResponse {
+  logs: string[];
+  downloadUrl: string;
+  renderedFileSize: string;
+  hardwareAccelerationActive: boolean;
+}
+
+interface FfmpegResult {
+  success: true;
+  downloadUrl: string;
+  renderedFileSize: string;
+  hardwareAccelerationActive: boolean;
+}
+
+type FfmpegOperation = "stitch" | "compress" | "subtitle" | "watermark";
+type FfmpegCodec = "libx264" | "libx265" | "nvenc_h264";
+type FfmpegResolution = "3840x2160" | "1920x1080" | "1280x720";
+type FfmpegBitrate = "5000k" | "2500k" | "1000k";
+
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : String(error);
 
 export default function NativeEngineCenter({
   scenes,
@@ -65,27 +102,21 @@ export default function NativeEngineCenter({
 
   // Media SDK Processing States
   const [isProbing, setIsProbing] = useState(false);
-  const [probeResult, setProbeResult] = useState<any | null>(null);
+  const [probeResult, setProbeResult] = useState<ProbeResult | null>(null);
 
   const [isExportingDocx, setIsExportingDocx] = useState(false);
   const [isExportingZip, setIsExportingZip] = useState(false);
 
   const [isProcessingFfmpeg, setIsProcessingFfmpeg] = useState(false);
-  const [ffmpegOperation, setFfmpegOperation] = useState<
-    "stitch" | "compress" | "subtitle" | "watermark"
-  >("stitch");
-  const [ffmpegCodec, setFfmpegCodec] = useState<
-    "libx264" | "libx265" | "nvenc_h264"
-  >("libx264");
-  const [ffmpegResolution, setFfmpegResolution] = useState<
-    "3840x2160" | "1920x1080" | "1280x720"
-  >("1920x1080");
-  const [ffmpegBitrate, setFfmpegBitrate] = useState<
-    "5000k" | "2500k" | "1000k"
-  >("2500k");
+  const [ffmpegOperation, setFfmpegOperation] =
+    useState<FfmpegOperation>("stitch");
+  const [ffmpegCodec, setFfmpegCodec] = useState<FfmpegCodec>("libx264");
+  const [ffmpegResolution, setFfmpegResolution] =
+    useState<FfmpegResolution>("1920x1080");
+  const [ffmpegBitrate, setFfmpegBitrate] = useState<FfmpegBitrate>("2500k");
   const [ffmpegAccel, setFfmpegAccel] = useState(true);
   const [ffmpegLogs, setFfmpegLogs] = useState<string[]>([]);
-  const [ffmpegResult, setFfmpegResult] = useState<any | null>(null);
+  const [ffmpegResult, setFfmpegResult] = useState<FfmpegResult | null>(null);
 
   // Aliyun OSS States
   const [isUploadingOss, setIsUploadingOss] = useState(false);
@@ -478,13 +509,14 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
         body: JSON.stringify({ videoUrl: activeScene.videoUrl }),
       });
 
-      const data = await response.json();
+      const data: ProbeApiResponse = await response.json();
       if (data.success) {
         setProbeResult(data);
       } else {
-        throw new Error(data.error || "Probing failed");
+        const errorMessage = "error" in data ? data.error : undefined;
+        throw new Error(errorMessage || "Probing failed");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("ffprobe error:", err);
       // Fail-safe default
       setProbeResult({
@@ -527,7 +559,7 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
         " output.mp4",
     ]);
 
-    let progressTimer: any = null;
+    let progressTimer: ReturnType<typeof setInterval> | null = null;
 
     try {
       const response = await fetch("/api/media/ffmpeg-pipeline", {
@@ -544,7 +576,7 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
         }),
       });
 
-      const data = await response.json();
+      const data: FfmpegPipelineResponse = await response.json();
 
       // Simulate real-time log ingestion ticks
       let progressIndex = 0;
@@ -553,7 +585,7 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
           setFfmpegLogs((prev) => [...prev, data.logs[progressIndex]]);
           progressIndex++;
         } else {
-          clearInterval(progressTimer);
+          if (progressTimer !== null) clearInterval(progressTimer);
           setFfmpegResult({
             success: true,
             downloadUrl: data.downloadUrl,
@@ -563,11 +595,11 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
           setIsProcessingFfmpeg(false);
         }
       }, 250);
-    } catch (err: any) {
-      if (progressTimer) clearInterval(progressTimer);
+    } catch (err: unknown) {
+      if (progressTimer !== null) clearInterval(progressTimer);
       setFfmpegLogs((prev) => [
         ...prev,
-        "❌ [FFmpeg Error] Local pipeline interrupted: " + err.message,
+        "❌ [FFmpeg Error] Local pipeline interrupted: " + getErrorMessage(err),
       ]);
       setIsProcessingFfmpeg(false);
     }
@@ -644,8 +676,8 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
       document.body.appendChild(link);
       link.click();
       link.remove();
-    } catch (err: any) {
-      alert("Word剧本导出失败: " + err.message);
+    } catch (err: unknown) {
+      alert("Word剧本导出失败: " + getErrorMessage(err));
     } finally {
       setIsExportingDocx(false);
     }
@@ -678,8 +710,8 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
       document.body.appendChild(link);
       link.click();
       link.remove();
-    } catch (err: any) {
-      alert("ZIP部署包打包失败: " + err.message);
+    } catch (err: unknown) {
+      alert("ZIP部署包打包失败: " + getErrorMessage(err));
     } finally {
       setIsExportingZip(false);
     }
@@ -975,7 +1007,11 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
                     </label>
                     <select
                       value={newReqCategory}
-                      onChange={(e) => setNewReqCategory(e.target.value as any)}
+                      onChange={(e) =>
+                        setNewReqCategory(
+                          e.target.value as RequirementItem["category"],
+                        )
+                      }
                       className="w-full bg-slate-950 text-slate-300 px-2.5 py-2 rounded-lg border border-slate-800 outline-none focus:border-amber-500/30"
                     >
                       <option value="performance">⚡ 性能与高并发解码</option>
@@ -1012,7 +1048,11 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
                       </label>
                       <select
                         value={newReqTarget}
-                        onChange={(e) => setNewReqTarget(e.target.value as any)}
+                        onChange={(e) =>
+                          setNewReqTarget(
+                            e.target.value as RequirementItem["target"],
+                          )
+                        }
                         className="w-full bg-slate-950 text-slate-300 px-2 py-2 rounded-lg border border-slate-800 outline-none focus:border-amber-500/30"
                       >
                         <option value="Zig Native">Zig Native</option>
@@ -1028,7 +1068,9 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
                       <select
                         value={newReqPriority}
                         onChange={(e) =>
-                          setNewReqPriority(e.target.value as any)
+                          setNewReqPriority(
+                            e.target.value as RequirementItem["priority"],
+                          )
                         }
                         className="w-full bg-slate-950 text-slate-300 px-2 py-2 rounded-lg border border-slate-800 outline-none focus:border-amber-500/30"
                       >
@@ -1209,7 +1251,7 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
                         </strong>
                       </div>
                       {probeResult.metadata.streams.map(
-                        (stream: any, sIdx: number) => (
+                        (stream, sIdx: number) => (
                           <div
                             key={sIdx}
                             className="border-t border-slate-900/60 pt-1 mt-1 font-semibold text-[9.5px]"
@@ -1432,7 +1474,9 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
                     </label>
                     <select
                       value={ffmpegOperation}
-                      onChange={(e: any) => setFfmpegOperation(e.target.value)}
+                      onChange={(e) =>
+                        setFfmpegOperation(e.target.value as FfmpegOperation)
+                      }
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors"
                     >
                       <option value="stitch">
@@ -1456,7 +1500,9 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
                     </label>
                     <select
                       value={ffmpegCodec}
-                      onChange={(e: any) => setFfmpegCodec(e.target.value)}
+                      onChange={(e) =>
+                        setFfmpegCodec(e.target.value as FfmpegCodec)
+                      }
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors"
                     >
                       <option value="libx264">
@@ -1479,7 +1525,9 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
                     </label>
                     <select
                       value={ffmpegResolution}
-                      onChange={(e: any) => setFfmpegResolution(e.target.value)}
+                      onChange={(e) =>
+                        setFfmpegResolution(e.target.value as FfmpegResolution)
+                      }
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors"
                     >
                       <option value="3840x2160">3840x2160 (4K UHD 极清)</option>
@@ -1496,7 +1544,9 @@ ${variables.map((v) => `    ${v.name}: ${v.type === "boolean" ? (v.value ? "true
                     </label>
                     <select
                       value={ffmpegBitrate}
-                      onChange={(e: any) => setFfmpegBitrate(e.target.value)}
+                      onChange={(e) =>
+                        setFfmpegBitrate(e.target.value as FfmpegBitrate)
+                      }
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors"
                     >
                       <option value="5000k">5000 kbps (超写实电影质量)</option>
