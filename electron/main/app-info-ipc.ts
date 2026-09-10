@@ -33,7 +33,7 @@ export function registerAppInfoIpc(context: AppInfoIpcContext): () => void {
   };
 }
 
-function assertTrustedSender(
+export function assertTrustedSender(
   event: IpcMainInvokeEvent,
   context: AppInfoIpcContext,
 ): void {

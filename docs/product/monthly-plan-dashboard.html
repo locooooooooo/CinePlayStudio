@@ -1,0 +1,1585 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="GameEditor 2026 年 8 月产品月计划 dashboard，聚焦互动项目模型、创作闭环和产品能力优先级。"
+    />
+    <title>GameEditor | 2026 年 8 月产品月计划</title>
+    <style>
+      :root {
+        --ink: #17242d;
+        --muted: #63727c;
+        --paper: #f3f6f7;
+        --surface: #ffffff;
+        --subtle: #ebf1f3;
+        --line: #d6e0e4;
+        --line-strong: #b9c9d0;
+        --teal: #0f766e;
+        --teal-soft: #d8f1ed;
+        --blue: #1d4ed8;
+        --blue-soft: #e4ebff;
+        --amber: #a16207;
+        --amber-soft: #fff1cf;
+        --coral: #c2410c;
+        --coral-soft: #ffe4d7;
+        --red: #b42318;
+        --red-soft: #ffe0df;
+        --shadow: 0 10px 28px rgba(23, 36, 45, 0.07);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          Inter, "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      a {
+        color: var(--blue);
+        text-underline-offset: 3px;
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid rgba(29, 78, 216, 0.3);
+        outline-offset: 2px;
+      }
+
+      .masthead {
+        color: #f7fafb;
+        background: #1f2d36;
+        border-bottom: 4px solid var(--teal);
+      }
+
+      .masthead-inner,
+      .content {
+        width: min(1440px, calc(100% - 48px));
+        margin-inline: auto;
+      }
+
+      .masthead-inner {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 32px;
+        padding-block: 34px 30px;
+      }
+
+      .brandline {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .brandmark {
+        display: grid;
+        flex: 0 0 auto;
+        place-items: center;
+        width: 46px;
+        height: 46px;
+        color: #17343a;
+        background: #b9eee6;
+        border-radius: 7px;
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+      }
+
+      .eyebrow,
+      .section-kicker,
+      .meta-label,
+      .table-caption,
+      .week-label {
+        margin: 0;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .masthead .eyebrow {
+        color: #8edbd1;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-block-start: 0;
+      }
+
+      h1 {
+        margin-block: 5px;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 750;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      .lede {
+        max-width: 760px;
+        margin: 0;
+        color: #c9d5da;
+        font-size: 16px;
+      }
+
+      .masthead-meta {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 5px 18px;
+        min-width: 235px;
+        padding-left: 22px;
+        border-left: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      .masthead-meta .meta-label {
+        color: #9cafb7;
+      }
+
+      .masthead-meta strong {
+        color: #fff;
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .content {
+        padding-block: 24px 46px;
+      }
+
+      .section {
+        margin-block: 34px;
+        scroll-margin-top: 18px;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 22px;
+        margin-bottom: 16px;
+      }
+
+      .section-heading h2 {
+        margin: 3px 0 0;
+        font-size: 22px;
+        letter-spacing: -0.01em;
+      }
+
+      .section-heading p {
+        max-width: 720px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: right;
+      }
+
+      .product-statement {
+        display: grid;
+        grid-template-columns: minmax(220px, 0.75fr) 1.5fr minmax(210px, 0.75fr);
+        align-items: stretch;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-left: 5px solid var(--teal);
+        box-shadow: var(--shadow);
+      }
+
+      .statement-label,
+      .statement-body,
+      .statement-boundary {
+        padding: 19px;
+      }
+
+      .statement-label {
+        background: #e8f3f1;
+        border-right: 1px solid var(--line);
+      }
+
+      .statement-label h2 {
+        margin: 6px 0 0;
+        font-size: 21px;
+      }
+
+      .statement-body {
+        display: flex;
+        align-items: center;
+        color: var(--ink);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      .statement-boundary {
+        color: var(--muted);
+        border-left: 1px solid var(--line);
+        font-size: 13px;
+      }
+
+      .statement-boundary strong {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--ink);
+        font-size: 12px;
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .metric {
+        min-height: 116px;
+        padding: 17px 16px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-top: 3px solid var(--line-strong);
+      }
+
+      .metric.teal {
+        border-top-color: var(--teal);
+      }
+
+      .metric.blue {
+        border-top-color: var(--blue);
+      }
+
+      .metric.amber {
+        border-top-color: var(--amber);
+      }
+
+      .metric.coral {
+        border-top-color: var(--coral);
+      }
+
+      .metric-value {
+        display: block;
+        margin-top: 8px;
+        color: var(--ink);
+        font-size: 25px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+
+      .metric-note {
+        display: block;
+        margin-top: 9px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .principles-grid,
+      .surface-grid,
+      .criteria-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .principle,
+      .surface,
+      .criteria-panel {
+        min-width: 0;
+        padding: 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-top: 3px solid var(--teal);
+      }
+
+      .principle:nth-child(2),
+      .surface:nth-child(2) {
+        border-top-color: var(--blue);
+      }
+
+      .principle:nth-child(3),
+      .surface:nth-child(3) {
+        border-top-color: var(--coral);
+      }
+
+      .principle h3,
+      .surface h3,
+      .criteria-panel h3 {
+        margin: 8px 0 7px;
+        font-size: 17px;
+      }
+
+      .principle p,
+      .surface p,
+      .criteria-panel p {
+        margin-bottom: 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding-inline: 8px;
+        color: #42515c;
+        background: var(--subtle);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .loop {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 0;
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+
+      .loop-step {
+        position: relative;
+        min-height: 126px;
+        padding: 17px 16px;
+        border-right: 1px solid var(--line);
+      }
+
+      .loop-step:last-child {
+        border-right: 0;
+      }
+
+      .loop-step:not(:last-child)::after {
+        position: absolute;
+        top: 50%;
+        right: -6px;
+        z-index: 1;
+        width: 10px;
+        height: 10px;
+        background: var(--surface);
+        border-top: 1px solid var(--line-strong);
+        border-right: 1px solid var(--line-strong);
+        content: "";
+        transform: translateY(-50%) rotate(45deg);
+      }
+
+      .loop-index {
+        color: var(--teal);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .loop-step h3 {
+        margin: 9px 0 6px;
+        font-size: 15px;
+      }
+
+      .loop-step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .week-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .week {
+        display: grid;
+        grid-template-columns: 150px 1fr 280px;
+        align-items: stretch;
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+
+      .week-index,
+      .week-main,
+      .week-outcome {
+        padding: 15px 18px;
+      }
+
+      .week-index {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+        background: #e8f3f1;
+        border-right: 1px solid var(--line);
+      }
+
+      .week:nth-child(2) .week-index {
+        background: #e9eefb;
+      }
+
+      .week:nth-child(3) .week-index {
+        background: #fff1d6;
+      }
+
+      .week:nth-child(4) .week-index {
+        background: #fce8df;
+      }
+
+      .week-number {
+        color: var(--ink);
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .week-date {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .week-main {
+        border-right: 1px solid var(--line);
+      }
+
+      .week-main h3,
+      .week-outcome h3 {
+        margin: 0 0 5px;
+        font-size: 15px;
+      }
+
+      .week-main p,
+      .week-outcome p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .table-shell {
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--line);
+      }
+
+      .table-tools {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 12px 14px;
+        background: var(--subtle);
+        border-bottom: 1px solid var(--line);
+      }
+
+      fieldset {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+
+      legend {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      .filter-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 31px;
+        padding: 0 10px;
+        color: var(--muted);
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: 5px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .filter-button:hover,
+      .filter-button.is-active {
+        color: var(--ink);
+        border-color: var(--teal);
+        box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.09);
+      }
+
+      .filter-count {
+        display: inline-grid;
+        place-items: center;
+        min-width: 20px;
+        height: 20px;
+        color: var(--muted);
+        background: var(--subtle);
+        border-radius: 10px;
+        font-size: 11px;
+      }
+
+      .table-summary {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .table-scroll {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        min-width: 980px;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th,
+      td {
+        padding: 13px 14px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        color: var(--muted);
+        background: #fbfcfc;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      tbody tr:hover {
+        background: #f8fbfb;
+      }
+
+      .item-id {
+        color: var(--ink);
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .item-name {
+        display: block;
+        min-width: 190px;
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      .item-note,
+      .item-dependency {
+        color: var(--muted);
+      }
+
+      .product-state {
+        display: inline-flex;
+        align-items: center;
+        min-height: 25px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .product-state.prototype {
+        color: #0a625c;
+        background: var(--teal-soft);
+      }
+
+      .product-state.focus {
+        color: #224ea5;
+        background: var(--blue-soft);
+      }
+
+      .product-state.next {
+        color: #805407;
+        background: var(--amber-soft);
+      }
+
+      .product-state.blocked {
+        color: #9d271b;
+        background: var(--red-soft);
+      }
+
+      tr.is-hidden {
+        display: none;
+      }
+
+      .criteria-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .criteria-panel:first-child {
+        border-top-color: var(--teal);
+      }
+
+      .criteria-panel:last-child {
+        border-top-color: var(--coral);
+      }
+
+      .check-list,
+      .risk-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .check-list li,
+      .risk-list li {
+        position: relative;
+        padding-left: 22px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .check-list li::before,
+      .risk-list li::before {
+        position: absolute;
+        top: 0.25em;
+        left: 0;
+        display: grid;
+        place-items: center;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        font-size: 10px;
+        font-weight: 900;
+      }
+
+      .check-list li::before {
+        color: var(--teal);
+        background: var(--teal-soft);
+        content: "✓";
+      }
+
+      .risk-list li::before {
+        color: var(--coral);
+        background: var(--coral-soft);
+        content: "!";
+      }
+
+      .source-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        margin-top: 14px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .boundary-note {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px;
+        align-items: start;
+        padding: 15px 17px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--amber);
+      }
+
+      .boundary-note strong {
+        color: var(--amber);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .boundary-note p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      details {
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      summary {
+        color: var(--ink);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 750;
+      }
+
+      details p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .footer {
+        padding-block: 22px 42px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+
+      @media (max-width: 1100px) {
+        .metric-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .product-statement {
+          grid-template-columns: 1fr 1.7fr;
+        }
+
+        .statement-boundary {
+          grid-column: 1 / -1;
+          border-top: 1px solid var(--line);
+          border-left: 0;
+        }
+
+        .loop {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .loop-step:nth-child(3) {
+          border-right: 0;
+        }
+
+        .loop-step:nth-child(-n + 3) {
+          border-bottom: 1px solid var(--line);
+        }
+
+        .loop-step:nth-child(3)::after,
+        .loop-step:nth-child(6)::after {
+          display: none;
+        }
+
+        .week {
+          grid-template-columns: 130px 1fr;
+        }
+
+        .week-outcome {
+          grid-column: 2;
+          border-top: 1px solid var(--line);
+        }
+      }
+
+      @media (max-width: 760px) {
+        .masthead-inner,
+        .content {
+          width: min(100% - 28px, 1440px);
+        }
+
+        .masthead-inner,
+        .section-heading,
+        .table-tools {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .masthead-inner {
+          gap: 22px;
+        }
+
+        .masthead-meta {
+          width: 100%;
+          padding: 13px 0 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.22);
+          border-left: 0;
+        }
+
+        .product-statement,
+        .principles-grid,
+        .surface-grid,
+        .criteria-grid,
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .statement-label {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .loop {
+          grid-template-columns: 1fr;
+        }
+
+        .loop-step,
+        .loop-step:nth-child(-n + 3) {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .loop-step:last-child {
+          border-bottom: 0;
+        }
+
+        .loop-step::after {
+          top: auto;
+          right: auto;
+          bottom: -6px;
+          left: 50%;
+          transform: translateX(-50%) rotate(135deg);
+        }
+
+        .loop-step:nth-child(3)::after,
+        .loop-step:nth-child(6)::after {
+          display: block;
+        }
+
+        .loop-step:last-child::after {
+          display: none;
+        }
+
+        .week {
+          grid-template-columns: 1fr;
+        }
+
+        .week-index {
+          flex-direction: row;
+          align-items: baseline;
+          justify-content: space-between;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .week-main,
+        .week-outcome {
+          grid-column: 1;
+          border-right: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead">
+        <div class="masthead-inner">
+          <div class="brandline">
+            <div class="brandmark" aria-hidden="true">GE</div>
+            <div>
+              <p class="eyebrow">GameEditor / Product Board</p>
+              <h1>2026 年 8 月产品月计划</h1>
+              <p class="lede">
+                让创作者把素材编排成可编辑、可预览、可保存、可输出的内容。
+              </p>
+            </div>
+          </div>
+          <div class="masthead-meta" aria-label="产品计划元数据">
+            <span class="meta-label">产品定位</span>
+            <strong>通用剪辑器工作台</strong>
+            <span class="meta-label">事实快照</span>
+            <strong>2026-08-05</strong>
+            <span class="meta-label">PM 视角</span>
+            <strong>产品能力优先</strong>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="section" aria-labelledby="statement-title">
+          <div class="product-statement">
+            <div class="statement-label">
+              <p class="section-kicker">Product north star</p>
+              <h2 id="statement-title">产品主张</h2>
+            </div>
+            <div class="statement-body">
+              GameEditor
+              首先是一款面向创作者的通用剪辑器：把素材、轨道、片段、字幕、音频和预览放在一条稳定的编辑闭环里。
+              结构化互动项目建立在这条基础能力之上，作为后续增强。
+            </div>
+            <div class="statement-boundary">
+              <strong>本月产品问题</strong>
+              用户能否不依赖额外说明，从导入素材走到剪辑、预览、保存并得到真实可播放的结果？
+            </div>
+          </div>
+
+          <div class="metric-grid" aria-label="产品月计划关键事实">
+            <article class="metric teal">
+              <span class="section-kicker">核心对象</span>
+              <strong class="metric-value">5</strong>
+              <span class="metric-note">项目、素材、轨道、片段、输出</span>
+            </article>
+            <article class="metric blue">
+              <span class="section-kicker">编辑面</span>
+              <strong class="metric-value">5</strong>
+              <span class="metric-note"
+                >项目、素材、时间轴、检查器、播放器</span
+              >
+            </article>
+            <article class="metric teal">
+              <span class="section-kicker">核心路径</span>
+              <strong class="metric-value">6</strong>
+              <span class="metric-note"
+                >项目 → 素材 → 时间线 → 剪辑 → 预览 → 输出</span
+              >
+            </article>
+            <article class="metric blue">
+              <span class="section-kicker">本月 P0</span>
+              <strong class="metric-value">7</strong>
+              <span class="metric-note"
+                >项目、素材、轨道、片段、保存、预览、输出</span
+              >
+            </article>
+            <article class="metric coral">
+              <span class="section-kicker">产品原则</span>
+              <strong class="metric-value">可用</strong>
+              <span class="metric-note"
+                >先让创作者稳定剪出结果，再叠加互动能力</span
+              >
+            </article>
+            <article class="metric amber">
+              <span class="section-kicker">当前边界</span>
+              <strong class="metric-value">P0-1</strong>
+              <span class="metric-note"
+                >Schema 已技术验证，P0-2 项目存储待派发</span
+              >
+            </article>
+          </div>
+        </section>
+
+        <section
+          class="section"
+          id="principles"
+          aria-labelledby="principles-title"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Product principles</p>
+              <h2 id="principles-title">本月产品决策</h2>
+            </div>
+            <p>每项需求都必须回到创作任务和产品对象，不从商业包装倒推功能。</p>
+          </div>
+          <div class="principles-grid">
+            <article class="principle">
+              <p class="section-kicker">01 / Editing</p>
+              <h3>先把剪辑闭环做顺</h3>
+              <p>
+                素材、轨道、片段、时间线、预览和输出属于同一份项目；创作者可以从导入一路走到成片。
+              </p>
+              <div class="tag-row">
+                <span class="tag">Asset</span>
+                <span class="tag">Track</span>
+                <span class="tag">Clip</span>
+              </div>
+            </article>
+            <article class="principle">
+              <p class="section-kicker">02 / Creation</p>
+              <h3>让每个编辑动作可理解</h3>
+              <p>
+                时间线负责编排，检查器负责细节，播放器负责验证；创作者能完成移动、裁切、分割、调整和预览。
+              </p>
+              <div class="tag-row">
+                <span class="tag">Timeline</span>
+                <span class="tag">Inspector</span>
+                <span class="tag">Player</span>
+              </div>
+            </article>
+            <article class="principle">
+              <p class="section-kicker">03 / Trust</p>
+              <h3>失败必须真实可解释</h3>
+              <p>
+                保存、素材、预览和输出都要区分真实结果、fallback、mock
+                和暂不支持，不给假成功。
+              </p>
+              <div class="tag-row">
+                <span class="tag">Error state</span>
+                <span class="tag">Provenance</span>
+                <span class="tag">No fake success</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="loop" aria-labelledby="loop-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Core product loop</p>
+              <h2 id="loop-title">从素材到可播放成片</h2>
+            </div>
+            <p>
+              这是本月产品主线；结构化互动、AI、桌面和商业化都只能服务这条剪辑闭环。
+            </p>
+          </div>
+          <div class="loop">
+            <article class="loop-step">
+              <span class="loop-index">01 / INPUT</span>
+              <h3>项目</h3>
+              <p>创建或打开项目，项目文件成为可恢复的工作上下文。</p>
+            </article>
+            <article class="loop-step">
+              <span class="loop-index">02 / MEDIA</span>
+              <h3>素材</h3>
+              <p>导入视频、音频、图片和字幕，并明确失效路径和素材状态。</p>
+            </article>
+            <article class="loop-step">
+              <span class="loop-index">03 / TIMELINE</span>
+              <h3>时间线</h3>
+              <p>把素材放到多条轨道，对齐时间、层级和顺序。</p>
+            </article>
+            <article class="loop-step">
+              <span class="loop-index">04 / EDIT</span>
+              <h3>剪辑</h3>
+              <p>移动、裁切、分割、删除和调整片段，并能看见编辑结果。</p>
+            </article>
+            <article class="loop-step">
+              <span class="loop-index">05 / REVIEW</span>
+              <h3>预览</h3>
+              <p>播放、定位、检查音画和字幕，发现问题后回到具体片段。</p>
+            </article>
+            <article class="loop-step">
+              <span class="loop-index">06 / OUTPUT</span>
+              <h3>输出</h3>
+              <p>
+                保存项目并生成真实可播放结果；失败、取消和暂不支持都说清楚。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="surfaces" aria-labelledby="surfaces-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Current product surface</p>
+              <h2 id="surfaces-title">当前产品面与产品化方向</h2>
+            </div>
+            <p>“源码可见”只代表原型存在，不代表真实能力已经验收。</p>
+          </div>
+          <div class="surface-grid">
+            <article class="surface">
+              <p class="section-kicker">Project</p>
+              <h3>项目与工程文件</h3>
+              <p>
+                当前已有项目选择、创建、复制、重命名、导入和 ProjectDocument
+                结构；下一步是项目目录、保存、重开、迁移和恢复。
+              </p>
+              <div class="tag-row">
+                <span class="tag">ProjectManager</span
+                ><span class="tag">ProjectDocument</span>
+              </div>
+            </article>
+            <article class="surface">
+              <p class="section-kicker">Editing workspace</p>
+              <h3>素材与剪辑</h3>
+              <p>
+                当前已有素材管理、时间线和
+                Inspector；下一步是补齐轨道、片段的移动、裁切、分割、多选和撤回语义。
+              </p>
+              <div class="tag-row">
+                <span class="tag">AssetManager</span
+                ><span class="tag">Timeline</span
+                ><span class="tag">Inspector</span>
+              </div>
+            </article>
+            <article class="surface">
+              <p class="section-kicker">Review &amp; output</p>
+              <h3>预览与输出</h3>
+              <p>
+                当前已有播放器和导出入口；下一步是本地真实预览、渲染进度、取消、清理和可定位的失败状态。
+              </p>
+              <div class="tag-row">
+                <span class="tag">Player</span><span class="tag">Export</span
+                ><span class="tag">Diagnostics</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="rhythm" aria-labelledby="rhythm-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Product month rhythm</p>
+              <h2 id="rhythm-title">四周产品推进节奏</h2>
+            </div>
+            <p>这是 PM 的产品工作安排，不是发布倒计时，也不是商业交付承诺。</p>
+          </div>
+          <div class="week-list">
+            <article class="week">
+              <div class="week-index">
+                <span class="week-number">01</span
+                ><span class="week-date">08/04 - 08/10</span>
+              </div>
+              <div class="week-main">
+                <h3>完成 P0-1 规范项目模型</h3>
+                <p>
+                  明确 ProjectDocument、Asset、TimelineTrack、Clip 和 ExportJob
+                  的关系，写出用户能理解的项目结构。
+                </p>
+              </div>
+              <div class="week-outcome">
+                <h3>本周产出</h3>
+                <p>契约、P0 边界、fixtures 和独立 schema 技术验证已完成。</p>
+              </div>
+            </article>
+            <article class="week">
+              <div class="week-index">
+                <span class="week-number">02</span
+                ><span class="week-date">建议窗口</span>
+              </div>
+              <div class="week-main">
+                <h3>准备 P0-2 项目可靠性</h3>
+                <p>
+                  评审项目仓储、revision、原子保存和恢复语义；源码切片尚未派发。
+                </p>
+              </div>
+              <div class="week-outcome">
+                <h3>本周产出</h3>
+                <p>形成 draft-ready task/session 卡，不把准备文档写成实现。</p>
+              </div>
+            </article>
+            <article class="week">
+              <div class="week-index">
+                <span class="week-number">03</span
+                ><span class="week-date">建议窗口</span>
+              </div>
+              <div class="week-main">
+                <h3>打通剪辑和预览</h3>
+                <p>
+                  定义移动、裁切、分割、删除、属性调整、播放定位和撤回的产品语义，让编辑结果可复查。
+                </p>
+              </div>
+              <div class="week-outcome">
+                <h3>本周产出</h3>
+                <p>核心剪辑动作清单、预览验收路径和问题定位反馈。</p>
+              </div>
+            </article>
+            <article class="week">
+              <div class="week-index">
+                <span class="week-number">04</span
+                ><span class="week-date">月末复盘</span>
+              </div>
+              <div class="week-main">
+                <h3>验证一条完整剪辑旅程</h3>
+                <p>
+                  从新建项目、导入素材、编辑时间线、预览、保存重开到真实输出，逐项记录产品缺口。
+                </p>
+              </div>
+              <div class="week-outcome">
+                <h3>月末判断</h3>
+                <p>
+                  P0
+                  只保留能提升通用剪辑闭环的下一步；结构化互动项目进入增强候选池。
+                </p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="backlog" aria-labelledby="backlog-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Product backlog</p>
+              <h2 id="backlog-title">本月产品能力清单</h2>
+            </div>
+            <p>
+              状态以产品规划视角表达：原型已有、P0
+              本月、互动增强或工程闸门等待。
+            </p>
+          </div>
+          <div class="table-shell">
+            <div class="table-tools">
+              <fieldset aria-label="按产品状态筛选">
+                <legend>按产品状态筛选</legend>
+                <button
+                  class="filter-button is-active"
+                  type="button"
+                  data-filter="all"
+                  aria-pressed="true"
+                >
+                  全部 <span class="filter-count">12</span>
+                </button>
+                <button
+                  class="filter-button"
+                  type="button"
+                  data-filter="prototype"
+                  aria-pressed="false"
+                >
+                  原型已有 <span class="filter-count">4</span>
+                </button>
+                <button
+                  class="filter-button"
+                  type="button"
+                  data-filter="focus"
+                  aria-pressed="false"
+                >
+                  P0 本月 <span class="filter-count">5</span>
+                </button>
+                <button
+                  class="filter-button"
+                  type="button"
+                  data-filter="next"
+                  aria-pressed="false"
+                >
+                  互动增强 <span class="filter-count">2</span>
+                </button>
+                <button
+                  class="filter-button"
+                  type="button"
+                  data-filter="blocked"
+                  aria-pressed="false"
+                >
+                  工程等待 <span class="filter-count">1</span>
+                </button>
+              </fieldset>
+              <p class="table-summary" id="table-summary" aria-live="polite">
+                显示 12 / 12 项
+              </p>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <caption class="table-caption">
+                  GameEditor 产品能力 backlog
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">产品能力</th>
+                    <th scope="col">状态</th>
+                    <th scope="col">用户价值</th>
+                    <th scope="col">本月判断</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-status="prototype">
+                    <td><span class="item-id">P01</span></td>
+                    <td>
+                      <span class="item-name">项目与工程文件</span
+                      ><span class="item-dependency"
+                        >ProjectManager / ProjectDocument</span
+                      >
+                    </td>
+                    <td>
+                      <span class="product-state prototype">原型已有</span>
+                    </td>
+                    <td class="item-note">
+                      创作者可以建立、打开和管理一个持续工作的剪辑项目。
+                    </td>
+                    <td class="item-note">
+                      保留现有项目管理原型，补齐项目目录和恢复语义。
+                    </td>
+                  </tr>
+                  <tr data-status="prototype">
+                    <td><span class="item-id">P02</span></td>
+                    <td>
+                      <span class="item-name">素材库与媒体导入</span
+                      ><span class="item-dependency"
+                        >AssetManager / local assets</span
+                      >
+                    </td>
+                    <td>
+                      <span class="product-state prototype">原型已有</span>
+                    </td>
+                    <td class="item-note">
+                      视频、音频、图片和字幕能被找到、预览并放入项目。
+                    </td>
+                    <td class="item-note">
+                      先明确引用、复制、预览和失效素材的产品状态。
+                    </td>
+                  </tr>
+                  <tr data-status="prototype">
+                    <td><span class="item-id">P03</span></td>
+                    <td>
+                      <span class="item-name">多轨时间线</span
+                      ><span class="item-dependency"
+                        >Timeline / TimelineTrack / Clip</span
+                      >
+                    </td>
+                    <td>
+                      <span class="product-state prototype">原型已有</span>
+                    </td>
+                    <td class="item-note">
+                      素材可以按时间、层级和轨道关系组织成一个编辑结果。
+                    </td>
+                    <td class="item-note">
+                      冻结最小轨道类型、时序和片段显示范围。
+                    </td>
+                  </tr>
+                  <tr data-status="prototype">
+                    <td><span class="item-id">P04</span></td>
+                    <td>
+                      <span class="item-name">播放器与基础预览</span
+                      ><span class="item-dependency"
+                        >Player / seek / preview</span
+                      >
+                    </td>
+                    <td>
+                      <span class="product-state prototype">原型已有</span>
+                    </td>
+                    <td class="item-note">
+                      创作者能播放、定位并快速判断时间线是否符合预期。
+                    </td>
+                    <td class="item-note">
+                      补齐播放、定位、暂停、失败和回到编辑的状态。
+                    </td>
+                  </tr>
+                  <tr data-status="focus">
+                    <td><span class="item-id">P05</span></td>
+                    <td>
+                      <span class="item-name">片段剪辑操作</span
+                      ><span class="item-dependency"
+                        >trim / split / move / delete</span
+                      >
+                    </td>
+                    <td><span class="product-state focus">P0 本月</span></td>
+                    <td class="item-note">
+                      创作者可以完成最常用的移动、裁切、分割、删除和排序动作。
+                    </td>
+                    <td class="item-note">
+                      先把核心剪辑动作做成可复现、可撤回、可预览的任务。
+                    </td>
+                  </tr>
+                  <tr data-status="focus">
+                    <td><span class="item-id">P06</span></td>
+                    <td>
+                      <span class="item-name">检查器与属性编辑</span
+                      ><span class="item-dependency"
+                        >Inspector / clip properties</span
+                      >
+                    </td>
+                    <td><span class="product-state focus">P0 本月</span></td>
+                    <td class="item-note">
+                      用户能理解并调整当前素材或片段的属性，而不是猜测隐藏状态。
+                    </td>
+                    <td class="item-note">
+                      定义选中、修改、取消、应用和无效输入的反馈。
+                    </td>
+                  </tr>
+                  <tr data-status="focus">
+                    <td><span class="item-id">P07</span></td>
+                    <td>
+                      <span class="item-name">素材状态与重新绑定</span
+                      ><span class="item-dependency"
+                        >path / relink / missing media</span
+                      >
+                    </td>
+                    <td><span class="product-state focus">P0 本月</span></td>
+                    <td class="item-note">
+                      素材换位置、失效或重新绑定时，创作者知道项目发生了什么。
+                    </td>
+                    <td class="item-note">
+                      明确项目外路径、缺失、替换和重新绑定的可见语义。
+                    </td>
+                  </tr>
+                  <tr data-status="focus">
+                    <td><span class="item-id">P08</span></td>
+                    <td>
+                      <span class="item-name">保存、重开与恢复</span
+                      ><span class="item-dependency"
+                        >revision / recovery / migration</span
+                      >
+                    </td>
+                    <td><span class="product-state focus">P0 本月</span></td>
+                    <td class="item-note">
+                      项目属于用户，不被某台电脑、一次崩溃或一次浏览器刷新绑死。
+                    </td>
+                    <td class="item-note">
+                      当前 localStorage 只算原型事实，产品目标是可迁移项目目录。
+                    </td>
+                  </tr>
+                  <tr data-status="focus">
+                    <td><span class="item-id">P09</span></td>
+                    <td>
+                      <span class="item-name">项目健康检查</span
+                      ><span class="item-dependency"
+                        >Diagnostics / media / timeline</span
+                      >
+                    </td>
+                    <td><span class="product-state focus">P0 本月</span></td>
+                    <td class="item-note">
+                      在输出前发现缺失素材、越界片段、无效属性和时间线问题。
+                    </td>
+                    <td class="item-note">
+                      每条规则都要能定位到素材、轨道或片段并可复查。
+                    </td>
+                  </tr>
+                  <tr data-status="blocked">
+                    <td><span class="item-id">P10</span></td>
+                    <td>
+                      <span class="item-name">真实媒体输出 Job</span
+                      ><span class="item-dependency"
+                        >FFmpeg / cancel / cleanup / diagnostics</span
+                      >
+                    </td>
+                    <td><span class="product-state blocked">工程等待</span></td>
+                    <td class="item-note">
+                      用户获得真实可播放的文件，并能诊断失败、取消和清理结果。
+                    </td>
+                    <td class="item-note">
+                      这是 P0 产品目标，但等待工程闸门；模拟日志不计入完成。
+                    </td>
+                  </tr>
+                  <tr data-status="next">
+                    <td><span class="item-id">P11</span></td>
+                    <td>
+                      <span class="item-name">结构化场景与分支</span
+                      ><span class="item-dependency"
+                        >Flowchart / SceneNode / Choice / Variable</span
+                      >
+                    </td>
+                    <td><span class="product-state next">互动增强</span></td>
+                    <td class="item-note">
+                      在通用剪辑基础上表达场景、选择、条件和不同内容路径。
+                    </td>
+                    <td class="item-note">
+                      先不抢占 P0；待剪辑闭环稳定后再冻结互动对象语义。
+                    </td>
+                  </tr>
+                  <tr data-status="next">
+                    <td><span class="item-id">P12</span></td>
+                    <td>
+                      <span class="item-name">剧本拆解到互动候选</span
+                      ><span class="item-dependency"
+                        >ScriptDecomposer / schema validation</span
+                      >
+                    </td>
+                    <td><span class="product-state next">互动增强</span></td>
+                    <td class="item-note">
+                      减少搭建互动内容的手工成本，但不替代人工审查和剪辑判断。
+                    </td>
+                    <td class="item-note">
+                      AI 只生成候选结构；等基础剪辑器完成后再进入候选池。
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="section"
+          id="acceptance"
+          aria-labelledby="acceptance-title"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Product acceptance</p>
+              <h2 id="acceptance-title">月末产品判定</h2>
+            </div>
+            <p>只判定产品闭环是否更清楚，不提前作商业发布结论。</p>
+          </div>
+          <div class="criteria-grid">
+            <article class="criteria-panel">
+              <p class="section-kicker">Must be clearer</p>
+              <h3>本月必须说清楚</h3>
+              <ul class="check-list">
+                <li>创作者如何从新建项目、导入素材走到可播放的时间线。</li>
+                <li>
+                  移动、裁切、分割、属性调整和预览的核心编辑任务是否连贯。
+                </li>
+                <li>缺失素材、无效片段和时间线问题如何被发现并定位。</li>
+                <li>保存、重开、恢复和真实输出各自的状态与失败语义。</li>
+                <li>结构化互动项目为什么是增强项，而不是本月 P0。</li>
+              </ul>
+            </article>
+            <article class="criteria-panel">
+              <p class="section-kicker">Do not claim yet</p>
+              <h3>本月不允许提前声称</h3>
+              <ul class="risk-list">
+                <li>项目目录、素材导入、真实渲染和恢复已经产品化。</li>
+                <li>源码中存在组件就等于用户可以稳定完成核心任务。</li>
+                <li>mock、fallback、示例 URL 或旧包可以替代真实能力证据。</li>
+                <li>
+                  结构化互动项目、云协作、插件市场或运行时平台不属于当前 P0。
+                </li>
+                <li>商业化计划可以反向决定本月产品功能优先级。</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="boundary" aria-labelledby="boundary-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Control note</p>
+              <h2 id="boundary-title">工程边界只做背景，不主导产品视图</h2>
+            </div>
+            <p>
+              保留这条信息是为了避免计划越界，不是把 dashboard 变成发布管理板。
+            </p>
+          </div>
+          <div class="boundary-note">
+            <strong>M0 / M1</strong>
+            <p>
+              当前 M0 提交与技术门禁已关闭；P0-1 Schema 已技术验证，P0-2
+              项目存储仍是
+              draft-ready。产品经理继续冻结对象、规则、错误语义和验收标准；源码、IPC、真实媒体输出和
+              P1 互动必须等新的明确派工与文件锁。
+            </p>
+          </div>
+          <nav class="source-links" aria-label="产品事实源">
+            <a href="commercialization-plan.md">产品与商业计划</a>
+            <a href="../pc-desktop-porting-technical-plan.md">PC 技术基线</a>
+            <a href="commercialization-task-board.md">任务板</a>
+          </nav>
+        </section>
+      </main>
+
+      <footer class="footer">
+        GameEditor / 2026-08 产品月计划 · 事实快照：2026-08-05 ·
+        产品计划不替代工程验收
+      </footer>
+    </div>
+
+    <script>
+      (() => {
+        const rows = [...document.querySelectorAll("tbody tr[data-status]")];
+        const buttons = [...document.querySelectorAll(".filter-button")];
+        const summary = document.querySelector("#table-summary");
+
+        const updateView = (filter) => {
+          let visible = 0;
+          rows.forEach((row) => {
+            const match = filter === "all" || row.dataset.status === filter;
+            row.classList.toggle("is-hidden", !match);
+            if (match) visible += 1;
+          });
+          buttons.forEach((button) => {
+            const active = button.dataset.filter === filter;
+            button.classList.toggle("is-active", active);
+            button.setAttribute("aria-pressed", String(active));
+          });
+          summary.textContent = `显示 ${visible} / ${rows.length} 项`;
+        };
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () =>
+            updateView(button.dataset.filter),
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -23,6 +23,7 @@ import Inspector from "./components/Inspector";
 import NativeEngineCenter from "./components/NativeEngineCenter";
 import ScriptDecomposer from "./components/ScriptDecomposer";
 import ProjectManager from "./components/ProjectManager";
+import type { ProjectDocument as CanonicalProjectDocument } from "../shared/contracts/project";
 
 import {
   Sparkles,
@@ -129,6 +130,8 @@ export default function App() {
   const [assets, setAssets] = useState<MediaAsset[]>([]);
   const [plugins, setPlugins] = useState<EditorPlugin[]>([]);
   const [variables, setVariables] = useState<ProjectVariable[]>([]);
+  const [projectRoot, setProjectRoot] = useState<string | null>(null);
+  const [projectRevision, setProjectRevision] = useState<string | null>(null);
 
   // Project Management States
   const [projectName, setProjectName] = useState<string>("赛步影游剧本");
@@ -183,6 +186,199 @@ export default function App() {
       choices: [],
     };
   const activeTracks = timelines[activeScene.id] || [];
+
+  const buildCanonicalDocument = (): CanonicalProjectDocument => {
+    const now = new Date().toISOString();
+    const persistedAssets = assets
+      .filter((asset) => asset.projectPath)
+      .map((asset) => ({
+        id: asset.id,
+        name: asset.name,
+        type: asset.type,
+        path: asset.projectPath!,
+        sizeBytes: asset.sizeBytes ?? 0,
+        durationSeconds: asset.duration,
+        availability: asset.availability ?? "available",
+      }));
+    const persistedTimelines = Object.fromEntries(
+      (Object.entries(timelines) as [string, TimelineTrack[]][]).map(([sceneId, tracks]) => [
+        sceneId,
+        tracks.map((track) => ({
+          ...track,
+          clips: track.clips.map((clip) => ({
+            id: clip.id,
+            title: clip.title,
+            trackId: track.id,
+            startTime: clip.startTime,
+            duration: clip.duration,
+            assetId: typeof clip.content.videoUrl === "string" && persistedAssets[0]
+              ? persistedAssets[0].id
+              : undefined,
+            content: {
+              text: clip.content.text,
+              choices: clip.content.choices,
+              variableId: clip.content.variableId,
+              operation: clip.content.operation as "set" | "add" | "sub" | undefined,
+              value: clip.content.value,
+            },
+          })),
+        })),
+      ]),
+    );
+    return {
+      schemaVersion: 1,
+      id: currentProjectId || `project-${Date.now()}`,
+      name: projectName,
+      createdAt: now,
+      modifiedAt: now,
+      scenes: scenes.map((scene) => ({ id: scene.id, name: scene.name, duration: scene.duration })),
+      timelines: persistedTimelines,
+      assets: persistedAssets,
+      variables,
+      folders: [],
+      tags: [],
+      pluginDescriptors: plugins.filter((plugin) => plugin.isActive).map((plugin) => ({
+        id: plugin.id,
+        name: plugin.name,
+        version: plugin.version,
+        description: plugin.description,
+        execution: "static" as const,
+      })),
+      settings: { timeUnit: "seconds" as const },
+    };
+  };
+
+  const hydrateCanonicalDocument = (document: CanonicalProjectDocument, root: string) => {
+    const assetById = new Map(document.assets.map((asset) => [asset.id, asset]));
+    const toUrl = (relativePath: string) => new URL(relativePath, `file:///${root.replaceAll("\\", "/")}/`).href;
+    const hydratedAssets: MediaAsset[] = document.assets.map((asset) => ({
+      id: asset.id,
+      name: asset.name,
+      type: asset.type,
+      url: toUrl(asset.path),
+      duration: asset.durationSeconds,
+      thumbnail: "",
+      size: `${(asset.sizeBytes / (1024 * 1024)).toFixed(2)} MB`,
+      sizeBytes: asset.sizeBytes,
+      category: "Project Asset",
+      projectPath: asset.path,
+      availability: asset.availability,
+    }));
+    const hydratedScenes: SceneNode[] = document.scenes.map((scene) => {
+      const sceneTracks = document.timelines[scene.id] || [];
+      const firstVideoClip = sceneTracks.find((track) => track.type === "video")?.clips[0];
+      const videoAsset = firstVideoClip?.assetId ? assetById.get(firstVideoClip.assetId) : undefined;
+      const triggerClip = sceneTracks.find((track) => track.type === "trigger")?.clips[0];
+      return {
+        id: scene.id,
+        name: scene.name,
+        videoUrl: videoAsset ? toUrl(videoAsset.path) : "",
+        duration: scene.duration,
+        thumbnail: "",
+        description: "",
+        position: { x: 100, y: 150 },
+        choices: triggerClip?.content?.choices || [],
+      };
+    });
+    const hydratedTimelines = Object.fromEntries(
+      Object.entries(document.timelines).map(([sceneId, tracks]) => [
+        sceneId,
+        tracks.map((track) => ({
+          ...track,
+          clips: track.clips.map((clip) => ({
+            id: clip.id,
+            title: clip.title,
+            startTime: clip.startTime,
+            duration: clip.duration,
+            color: "bg-emerald-600/30 border-emerald-500 text-emerald-300",
+            content: clip.content || {},
+          })),
+        })),
+      ]),
+    ) as Record<string, TimelineTrack[]>;
+    setScenes(hydratedScenes);
+    setTimelines(hydratedTimelines);
+    setAssets(hydratedAssets);
+    setVariables(document.variables);
+    setPlugins([]);
+    setProjectName(document.name);
+    setCurrentProjectId(document.id);
+    if (hydratedScenes[0]) setActiveSceneId(hydratedScenes[0].id);
+  };
+
+  const handleChooseProjectDirectory = async () => {
+    const api = window.gameEditor?.project;
+    if (!api) {
+      setSaveStatus("error");
+      return;
+    }
+    try {
+      const selectedRoot = await api.chooseDirectory();
+      if (!selectedRoot) return;
+      const document = buildCanonicalDocument();
+      let snapshot;
+      try {
+        snapshot = await api.create(selectedRoot, document);
+      } catch {
+        snapshot = await api.open(selectedRoot);
+        hydrateCanonicalDocument(snapshot.document, selectedRoot);
+      }
+      setProjectRoot(snapshot.projectRoot);
+      setProjectRevision(snapshot.revision);
+      setSaveStatus("saved");
+    } catch (error) {
+      console.error("Project directory operation failed", error);
+      setSaveStatus("error");
+    }
+  };
+
+  const handleImportRealAsset = async (): Promise<MediaAsset | null> => {
+    if (!projectRoot || !window.gameEditor?.project) return null;
+    try {
+      const imported = await window.gameEditor.project.importAsset(projectRoot);
+      if (!imported) return null;
+      const asset: MediaAsset = {
+        id: `asset-${Date.now()}`,
+        name: imported.name,
+        type: imported.type,
+        url: new URL(imported.path, "file:///" + projectRoot.replaceAll("\\", "/") + "/").href,
+        duration: imported.durationSeconds,
+        thumbnail: "",
+        size: `${(imported.sizeBytes / (1024 * 1024)).toFixed(2)} MB`,
+        sizeBytes: imported.sizeBytes,
+        category: "User Import",
+        projectPath: imported.path,
+        availability: "available",
+      };
+      handleAddAsset(asset);
+      return asset;
+    } catch (error) {
+      console.error("Real asset import failed", error);
+      setSaveStatus("error");
+      return null;
+    }
+  };
+
+  const handleExportCurrentSceneMp4 = async () => {
+    const asset = assets.find((item) => item.type === "video" && item.projectPath);
+    if (!projectRoot || !asset?.projectPath || !window.gameEditor?.project) {
+      setSaveStatus("error");
+      alert("请先连接项目目录，并导入一条本地视频素材。");
+      return;
+    }
+    try {
+      const result = await window.gameEditor.project.exportMp4(
+        projectRoot,
+        asset.projectPath,
+        activeScene.duration,
+      );
+      alert(`已生成 MP4: ${result.outputPath}`);
+    } catch (error) {
+      console.error("MP4 export failed", error);
+      setSaveStatus("error");
+      alert("MP4 导出失败，请检查素材编码和磁盘空间。");
+    }
+  };
 
   // 1a. Load initial project list & active project detail on mount
   useEffect(() => {
@@ -283,7 +479,7 @@ export default function App() {
       return;
 
     setSaveStatus("saving");
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       try {
         const updatedProject = {
           id: currentProjectId,
@@ -338,6 +534,19 @@ export default function App() {
         });
 
         setSaveStatus("saved");
+        if (projectRoot && projectRevision && window.gameEditor?.project) {
+          try {
+            const snapshot = await window.gameEditor.project.save(
+              projectRoot,
+              buildCanonicalDocument(),
+              projectRevision,
+            );
+            setProjectRevision(snapshot.revision);
+          } catch (error) {
+            console.error("User directory save failed", error);
+            setSaveStatus("error");
+          }
+        }
       } catch (err) {
         console.error("Failed auto-saving cineflow project:", err);
         setSaveStatus("error");
@@ -353,6 +562,8 @@ export default function App() {
     variables,
     projectName,
     currentProjectId,
+    projectRoot,
+    projectRevision,
   ]);
 
   // Project selectors and handlers
@@ -1237,6 +1448,15 @@ export default function App() {
 
           <div className="h-7 w-px bg-slate-800"></div>
 
+          <button
+            onClick={() => void handleChooseProjectDirectory()}
+            className="flex items-center gap-1.5 text-[10px] text-slate-300 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg cursor-pointer"
+            title="选择用户目录并保存真实项目文件"
+          >
+            <FolderOpen className="w-3.5 h-3.5" />
+            {projectRoot ? "项目目录已连接" : "连接项目目录"}
+          </button>
+
           {/* Project Hub button & editable Project Title block */}
           <div className="flex items-center gap-3 bg-[#0c0e18] px-3 py-1.5 rounded-xl border border-slate-800">
             <button
@@ -1448,6 +1668,7 @@ export default function App() {
                 <AssetManager
                   assets={assets}
                   onAddAsset={handleAddAsset}
+                  onImportRealAsset={handleImportRealAsset}
                   onDeleteAsset={handleDeleteAsset}
                   onUpdateAsset={handleUpdateAsset}
                   plugins={plugins}
@@ -1607,6 +1828,13 @@ export default function App() {
             </div>
 
             <div className="flex justify-end gap-2.5 mt-5">
+              <button
+                onClick={() => void handleExportCurrentSceneMp4()}
+                className="bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-slate-950 font-bold text-xs py-2 px-5 rounded-lg shadow-md cursor-pointer transition-all"
+                title="用项目目录中的本地视频导出当前场景 MP4"
+              >
+                导出当前场景 MP4
+              </button>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(generateProjectJSON());

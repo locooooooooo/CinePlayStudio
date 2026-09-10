@@ -52,6 +52,7 @@ interface AssetManagerProps {
   onAddVariable: (variable: ProjectVariable) => void;
   onDeleteVariable: (id: string) => void;
   onUpdateVariableValue: (id: string, value: ProjectVariableValue) => void;
+  onImportRealAsset?: () => Promise<MediaAsset | null>;
 }
 
 export default function AssetManager({
@@ -66,6 +67,7 @@ export default function AssetManager({
   onAddVariable,
   onDeleteVariable,
   onUpdateVariableValue,
+  onImportRealAsset,
 }: AssetManagerProps) {
   // Tabs: assets | plugins | variables
   const [activeTab, setActiveTab] = useState<
@@ -1498,6 +1500,17 @@ function onRender(variables) {
                       <Plus className="w-3 h-3" />
                       导入资产
                     </button>
+                    {onImportRealAsset && (
+                      <button
+                        type="button"
+                        onClick={() => void onImportRealAsset()}
+                        className="text-[9px] flex items-center gap-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 px-2 py-1 rounded cursor-pointer transition-all font-semibold"
+                        title="复制素材到用户项目目录"
+                      >
+                        <FolderOpen className="w-3 h-3" />
+                        导入到项目目录
+                      </button>
+                    )}
                   </div>
 
                   <input

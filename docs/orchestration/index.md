@@ -1,13 +1,13 @@
 # GameEditor LPS Control Index
 
-updated_at: 2026-07-13T08:43:40Z
+updated_at: 2026-08-07T04:15:00Z
 
 ## Current State
 
 - loop state: summarized
 - dispatch state: standby
-- active milestone: M0 commit closeout
-- top-level goal: commit and verify the completed M0 desktop baseline before M1
+- active milestone: P0-2 Project Storage technical closeout
+- top-level goal: deliver the smallest verifiable general-editor P0 path; structured interaction remains P1
 - repository state: Git initialized on `main`; generated artifacts and local tool state are ignored
 
 ## Read Order
@@ -20,12 +20,13 @@ updated_at: 2026-07-13T08:43:40Z
 
 ## Current Task
 
-- ⟦tag:v2|task|m0-desktop-baseline⟧; outcome verified, awaiting submission commit
+- ⟦tag:v2|task|p0-2-project-storage⟧; technically verified; P0-1 remains technically verified
 
 ## Recently Summarized Task
 
 - ⟦tag:v2|task|m0-desktop-baseline⟧; outcome verified
 - ⟦tag:v2|task|m0-legacy-lint-baseline⟧; outcome verified
+- ⟦tag:v2|task|p0-general-editor-dispatch⟧; prepare-only documents absorbed
 
 ## Current And Recent Sessions
 
@@ -35,10 +36,16 @@ updated_at: 2026-07-13T08:43:40Z
 - ⟦tag:v2|session|m0-acceptance-recovery-01⟧
 - ⟦tag:v2|session|m0-acceptance-recovery-02⟧
 - ⟦tag:v2|session|m0-pm-acceptance-01⟧
+- ⟦tag:v2|session|p0-general-editor-dispatch-round-2026-08-04⟧
+- ⟦tag:v2|session|p0-general-editor-readiness-2026-08-04⟧
+- ⟦tag:v2|session|p0-1-schema-01⟧
+- ⟦tag:v2|session|p0-2-project-storage-01⟧; archived / technically verified
+- ⟦tag:v2|session|ice-01-project-kernel-01⟧; blocked retained-owner / no implementation lock
 
 ## Retained Worker
 
 - `/root/m0_architecture_security`; retained architecture owner, no active gate
+- `019fda43-ef63-7e40-abee-4493c8d31da5`; `[长工]#project-kernel@E2`, ICE-01 blocked by agent runtime 429, no implementation lock
 
 ## Replaced Acceptance Worker
 
@@ -60,14 +67,16 @@ updated_at: 2026-07-13T08:43:40Z
 
 ## Dispatch Gate
 
-- Previous M0 desktop baseline outcome: partial.
-- Do not start M1 project storage, asset import, renderer adapters, FFmpeg render, OSS, updater, or plugin execution.
-- Legacy lint is verified at 0 errors; full lint, typecheck, tests, and build pass.
-- Full workspace formatting and the intended submission diff checks pass.
-- Concurrently created, untracked `docs/releases/**` is preserved but excluded from this submission because it is outside all M0-F file locks.
-- M1 remains closed until this submission is committed and the commit is verified.
+- M0 submission commit: `a80d91b` is present on `main`; post-commit lint, typecheck, format, test, build, Windows package, packaged FFprobe and diff checks were re-executed successfully. `npm ci` remains covered by the unchanged M0 clean-install evidence.
+- P0-1 Schema and P0-2 project storage are technically verified; no product implementation lock is active.
+- ICE-01 is blocked by agent runtime 429; keep ICE-02 through ICE-09, P0-3 assets, timeline integration, preview, export, IPC, FFmpeg, OSS, updater, plugin execution and all P1 structured interaction closed until their dependencies are verified and explicitly dispatched.
+- The P0 product is not user accepted, pushed or published. Fixtures and schema tests are technical evidence only.
+- Concurrently created unrelated untracked files are preserved and remain outside this lane.
 
 ## Truth Source
 
 - Technical requirements: `docs/pc-desktop-porting-technical-plan.md`
-- Live orchestration state: this file and `docs/orchestration/current-dispatch-shortlist.md`
+- Product P0 contract: `docs/product/p0-general-editor-product-contract-2026-08-04.md`
+- P0 acceptance matrix: `docs/product/p0-general-editor-acceptance-matrix-2026-08-04.md`
+- P0 follow-up roadmap: `docs/product/p0-general-editor-follow-up-roadmap-2026-08-05.md`
+- Live orchestration state: this file, `docs/orchestration/current-dispatch-shortlist.md` and `docs/orchestration/status.json`

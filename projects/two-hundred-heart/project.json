@@ -1,0 +1,681 @@
+{
+  "schemaVersion": 1,
+  "id": "two-hundred-heart-v1",
+  "name": "两百块的心动 · 1.0 六节点创作骨架",
+  "createdAt": "2026-08-08T00:00:00Z",
+  "modifiedAt": "2026-08-07T18:27:17Z",
+  "scenes": [
+    {
+      "id": "vs-node-01-bet",
+      "name": "鞋盒里的两百块",
+      "duration": 30
+    },
+    {
+      "id": "vs-node-02-meet",
+      "name": "先吃早饭，再举手机",
+      "duration": 30
+    },
+    {
+      "id": "vs-node-03-supermarket",
+      "name": "留下她的劳动，不留下她的脸",
+      "duration": 30
+    },
+    {
+      "id": "vs-node-04-sisters",
+      "name": "姐妹团三堂会审",
+      "duration": 30
+    },
+    {
+      "id": "vs-node-05-night-market",
+      "name": "四块钱的快乐",
+      "duration": 30
+    },
+    {
+      "id": "vs-node-06-refund",
+      "name": "天台，她看穿了一切",
+      "duration": 30
+    },
+    {
+      "id": "vs-node-06-refund-result",
+      "name": "她说明天再来，但不再购买她",
+      "duration": 10
+    }
+  ],
+  "timelines": {
+    "vs-node-01-bet": [
+      {
+        "id": "track-vs-node-01-bet-presentation",
+        "name": "本地静帧呈现",
+        "type": "video",
+        "clips": [
+          {
+            "id": "clip-vs-node-01-bet-presentation",
+            "title": "presentationAssetId / image / placeholder-local",
+            "assetId": "asset-vs-01-shoebox",
+            "trackId": "track-vs-node-01-bet-presentation",
+            "startTime": 0,
+            "duration": 30,
+            "content": {
+              "text": "本地静帧；未来可替换为同一呈现资产 ID 的视频。"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-01-bet-dialogue",
+        "name": "正文对白与来源",
+        "type": "subtitle",
+        "clips": [
+          {
+            "id": "clip-vs-node-01-bet-dialogue",
+            "title": "Canon quote",
+            "trackId": "track-vs-node-01-bet-dialogue",
+            "startTime": 2,
+            "duration": 12,
+            "content": {
+              "text": "200块整。 · source=output/第01章_月入五百的体面.md"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-01-bet-choice",
+        "name": "行为选择",
+        "type": "choice",
+        "clips": [
+          {
+            "id": "clip-vs-node-01-bet-choice",
+            "title": "最后这两百块，你想把什么交给她？",
+            "trackId": "track-vs-node-01-bet-choice",
+            "startTime": 15,
+            "duration": 1,
+            "content": {
+              "text": "最后这两百块，你想把什么交给她？",
+              "choices": [
+                {
+                  "id": "vs-c01-commit",
+                  "text": "把这一天交给她安排",
+                  "targetSceneId": "vs-node-02-meet",
+                  "triggerTime": 15,
+                  "actionCode": "variables.truth += 10"
+                },
+                {
+                  "id": "vs-c02-observe",
+                  "text": "先把它当成一条视频选题",
+                  "targetSceneId": "vs-node-02-meet",
+                  "triggerTime": 15,
+                  "actionCode": "variables.truth -= 5"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "vs-node-02-meet": [
+      {
+        "id": "track-vs-node-02-meet-presentation",
+        "name": "本地静帧呈现",
+        "type": "video",
+        "clips": [
+          {
+            "id": "clip-vs-node-02-meet-presentation",
+            "title": "presentationAssetId / image / placeholder-local",
+            "assetId": "asset-vs-02-meeting",
+            "trackId": "track-vs-node-02-meet-presentation",
+            "startTime": 0,
+            "duration": 30,
+            "content": {
+              "text": "本地静帧；未来可替换为同一呈现资产 ID 的视频。"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-02-meet-dialogue",
+        "name": "正文对白与来源",
+        "type": "subtitle",
+        "clips": [
+          {
+            "id": "clip-vs-node-02-meet-dialogue",
+            "title": "Canon quote",
+            "trackId": "track-vs-node-02-meet-dialogue",
+            "startTime": 2,
+            "duration": 12,
+            "content": {
+              "text": "你就是那个花200块体验我一天的冤种？ · source=output/第02章_我是认真的.md"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-02-meet-choice",
+        "name": "行为选择",
+        "type": "choice",
+        "clips": [
+          {
+            "id": "clip-vs-node-02-meet-choice",
+            "title": "她说“早饭都还没吃呢”，你怎么跟上她？",
+            "trackId": "track-vs-node-02-meet-choice",
+            "startTime": 15,
+            "duration": 1,
+            "content": {
+              "text": "她说“早饭都还没吃呢”，你怎么跟上她？",
+              "choices": [
+                {
+                  "id": "vs-c03-ask",
+                  "text": "先把手机放下，跟她去吃早饭",
+                  "targetSceneId": "vs-node-03-supermarket",
+                  "triggerTime": 15,
+                  "actionCode": "variables.cameraPausedAtBreakfast = true"
+                },
+                {
+                  "id": "vs-c04-record",
+                  "text": "先举起手机，边走边拍",
+                  "targetSceneId": "vs-node-03-supermarket",
+                  "triggerTime": 15,
+                  "actionCode": "variables.cameraPausedAtBreakfast = false"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "vs-node-03-supermarket": [
+      {
+        "id": "track-vs-node-03-supermarket-presentation",
+        "name": "本地静帧呈现",
+        "type": "video",
+        "clips": [
+          {
+            "id": "clip-vs-node-03-supermarket-presentation",
+            "title": "presentationAssetId / image / placeholder-local",
+            "assetId": "asset-vs-03-safe-hands",
+            "trackId": "track-vs-node-03-supermarket-presentation",
+            "startTime": 0,
+            "duration": 30,
+            "content": {
+              "text": "本地静帧；未来可替换为同一呈现资产 ID 的视频。"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-03-supermarket-dialogue",
+        "name": "正文对白与来源",
+        "type": "subtitle",
+        "clips": [
+          {
+            "id": "clip-vs-node-03-supermarket-dialogue",
+            "title": "Canon quote",
+            "trackId": "track-vs-node-03-supermarket-dialogue",
+            "startTime": 2,
+            "duration": 12,
+            "content": {
+              "text": "你先蹲下来， · source=output/第03章_精神小妹的早晨.md"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-03-supermarket-choice",
+        "name": "行为选择",
+        "type": "choice",
+        "clips": [
+          {
+            "id": "clip-vs-node-03-supermarket-choice",
+            "title": "顾客刁难时，你把什么留在镜头里？",
+            "trackId": "track-vs-node-03-supermarket-choice",
+            "startTime": 15,
+            "duration": 1,
+            "content": {
+              "text": "顾客刁难时，你把什么留在镜头里？",
+              "choices": [
+                {
+                  "id": "vs-c05-film-work",
+                  "text": "只拍她的手、货架和劳动",
+                  "targetSceneId": "vs-node-04-sisters",
+                  "triggerTime": 15,
+                  "actionCode": "variables.workFaceBoundaryRespected = true"
+                },
+                {
+                  "id": "vs-c06-push-conflict",
+                  "text": "追着顾客冲突拍清楚",
+                  "targetSceneId": "vs-node-04-sisters",
+                  "triggerTime": 15,
+                  "actionCode": "variables.workFaceBoundaryRespected = false"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "vs-node-04-sisters": [
+      {
+        "id": "track-vs-node-04-sisters-presentation",
+        "name": "本地静帧呈现",
+        "type": "video",
+        "clips": [
+          {
+            "id": "clip-vs-node-04-sisters-presentation",
+            "title": "presentationAssetId / image / placeholder-local",
+            "assetId": "asset-vs-04-sisters",
+            "trackId": "track-vs-node-04-sisters-presentation",
+            "startTime": 0,
+            "duration": 30,
+            "content": {
+              "text": "本地静帧；未来可替换为同一呈现资产 ID 的视频。"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-04-sisters-dialogue",
+        "name": "正文对白与来源",
+        "type": "subtitle",
+        "clips": [
+          {
+            "id": "clip-vs-node-04-sisters-dialogue",
+            "title": "Canon quote",
+            "trackId": "track-vs-node-04-sisters-dialogue",
+            "startTime": 2,
+            "duration": 12,
+            "content": {
+              "text": "你就是那个花200块体验我家小满的冤种？ · source=output/第04章_姐妹团的审判.md"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-04-sisters-choice",
+        "name": "行为选择",
+        "type": "choice",
+        "clips": [
+          {
+            "id": "clip-vs-node-04-sisters-choice",
+            "title": "姐妹团问你为什么拍她，你把哪一半回答交给她？",
+            "trackId": "track-vs-node-04-sisters-choice",
+            "startTime": 15,
+            "duration": 1,
+            "content": {
+              "text": "姐妹团问你为什么拍她，你把哪一半回答交给她？",
+              "choices": [
+                {
+                  "id": "vs-c07-explain",
+                  "text": "直接说清楚我为什么拍她",
+                  "targetSceneId": "vs-node-05-night-market",
+                  "triggerTime": 15,
+                  "actionCode": "variables.truth += 5"
+                },
+                {
+                  "id": "vs-c08-let-her-decide",
+                  "text": "先问她想不想听我说",
+                  "targetSceneId": "vs-node-05-night-market",
+                  "triggerTime": 15,
+                  "actionCode": "variables.boundaryRespect += 5"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "vs-node-05-night-market": [
+      {
+        "id": "track-vs-node-05-night-market-presentation",
+        "name": "本地静帧呈现",
+        "type": "video",
+        "clips": [
+          {
+            "id": "clip-vs-node-05-night-market-presentation",
+            "title": "presentationAssetId / image / placeholder-local",
+            "assetId": "asset-vs-05-lemonade",
+            "trackId": "track-vs-node-05-night-market-presentation",
+            "startTime": 0,
+            "duration": 30,
+            "content": {
+              "text": "本地静帧；未来可替换为同一呈现资产 ID 的视频。"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-05-night-market-dialogue",
+        "name": "正文对白与来源",
+        "type": "subtitle",
+        "clips": [
+          {
+            "id": "clip-vs-node-05-night-market-dialogue",
+            "title": "Canon quote",
+            "trackId": "track-vs-node-05-night-market-dialogue",
+            "startTime": 2,
+            "duration": 12,
+            "content": {
+              "text": "四块钱。 · source=output/第05章_四块钱的快乐.md"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-05-night-market-choice",
+        "name": "行为选择",
+        "type": "choice",
+        "clips": [
+          {
+            "id": "clip-vs-node-05-night-market-choice",
+            "title": "她讲“精神不是我在演”，你怎么陪她把话说完？",
+            "trackId": "track-vs-node-05-night-market-choice",
+            "startTime": 15,
+            "duration": 1,
+            "content": {
+              "text": "她讲“精神不是我在演”，你怎么陪她把话说完？",
+              "choices": [
+                {
+                  "id": "vs-c09-four-yuan",
+                  "text": "把手机扣下，听她把话说完",
+                  "targetSceneId": "vs-node-06-refund",
+                  "triggerTime": 15,
+                  "actionCode": "variables.phonePutAway = true"
+                },
+                {
+                  "id": "vs-c10-expensive-drink",
+                  "text": "先问能不能留一段她的原话",
+                  "targetSceneId": "vs-node-06-refund",
+                  "triggerTime": 15,
+                  "actionCode": "variables.phonePutAway = false"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "vs-node-06-refund": [
+      {
+        "id": "track-vs-node-06-refund-presentation",
+        "name": "本地静帧呈现",
+        "type": "video",
+        "clips": [
+          {
+            "id": "clip-vs-node-06-refund-presentation",
+            "title": "presentationAssetId / image / placeholder-local",
+            "assetId": "asset-vs-06-refund",
+            "trackId": "track-vs-node-06-refund-presentation",
+            "startTime": 0,
+            "duration": 30,
+            "content": {
+              "text": "本地静帧；未来可替换为同一呈现资产 ID 的视频。"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-06-refund-dialogue",
+        "name": "正文对白与来源",
+        "type": "subtitle",
+        "clips": [
+          {
+            "id": "clip-vs-node-06-refund-dialogue",
+            "title": "Canon quote",
+            "trackId": "track-vs-node-06-refund-dialogue",
+            "startTime": 2,
+            "duration": 12,
+            "content": {
+              "text": "你从裤兜里掏出那200块钱的时候。 · source=output/第06章_天台·她看穿了一切.md"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-06-refund-choice",
+        "name": "行为选择",
+        "type": "choice",
+        "clips": [
+          {
+            "id": "clip-vs-node-06-refund-choice",
+            "title": "她把原面额的两百块退回来，你怎么接住明天？",
+            "trackId": "track-vs-node-06-refund-choice",
+            "startTime": 15,
+            "duration": 1,
+            "content": {
+              "text": "她把原面额的两百块退回来，你怎么接住明天？",
+              "choices": [
+                {
+                  "id": "vs-c11-accept-refund",
+                  "text": "收回钱，问她明天想拍什么",
+                  "targetSceneId": "vs-node-06-refund-result",
+                  "triggerTime": 15,
+                  "actionCode": "variables.feeReturned = true"
+                },
+                {
+                  "id": "vs-c12-keep-transaction",
+                  "text": "先不收，和她把今天的账说清楚",
+                  "targetSceneId": "vs-node-06-refund-result",
+                  "triggerTime": 15,
+                  "actionCode": "variables.feeReturned = false"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "vs-node-06-refund-result": [
+      {
+        "id": "track-vs-node-06-refund-result-presentation",
+        "name": "本地静帧呈现",
+        "type": "video",
+        "clips": [
+          {
+            "id": "clip-vs-node-06-refund-result-presentation",
+            "title": "presentationAssetId / image / placeholder-local",
+            "assetId": "asset-vs-06-refund",
+            "trackId": "track-vs-node-06-refund-result-presentation",
+            "startTime": 0,
+            "duration": 10,
+            "content": {
+              "text": "本地静帧；未来可替换为同一呈现资产 ID 的视频。"
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-vs-node-06-refund-result-dialogue",
+        "name": "正文对白与来源",
+        "type": "subtitle",
+        "clips": [
+          {
+            "id": "clip-vs-node-06-refund-result-dialogue",
+            "title": "Canon quote",
+            "trackId": "track-vs-node-06-refund-result-dialogue",
+            "startTime": 2,
+            "duration": 6,
+            "content": {
+              "text": "视频继续拍。明天你过来，我再带你过一天——不要钱的那种。 · source=output/第06章_天台·她看穿了一切.md"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": [
+    {
+      "id": "asset-vs-01-shoebox",
+      "name": "第01章鞋盒与两百块",
+      "type": "image",
+      "path": "media/vs-01-shoebox.png",
+      "sizeBytes": 147078,
+      "durationSeconds": 0,
+      "availability": "available"
+    },
+    {
+      "id": "asset-vs-02-meeting",
+      "name": "第02章镜头被按低",
+      "type": "image",
+      "path": "media/vs-02-meeting.png",
+      "sizeBytes": 139735,
+      "durationSeconds": 0,
+      "availability": "available"
+    },
+    {
+      "id": "asset-vs-03-safe-hands",
+      "name": "第03章手与货架，不露脸",
+      "type": "image",
+      "path": "media/vs-03-safe-hands.png",
+      "sizeBytes": 147638,
+      "durationSeconds": 0,
+      "availability": "available"
+    },
+    {
+      "id": "asset-vs-04-sisters",
+      "name": "第04章姐妹团审判",
+      "type": "image",
+      "path": "media/vs-04-sisters.png",
+      "sizeBytes": 169744,
+      "durationSeconds": 0,
+      "availability": "available"
+    },
+    {
+      "id": "asset-vs-05-lemonade",
+      "name": "第05章四块钱柠檬水",
+      "type": "image",
+      "path": "media/vs-05-lemonade.png",
+      "sizeBytes": 146410,
+      "durationSeconds": 0,
+      "availability": "available"
+    },
+    {
+      "id": "asset-vs-06-refund",
+      "name": "第06章天台退钱",
+      "type": "image",
+      "path": "media/vs-06-refund.png",
+      "sizeBytes": 138768,
+      "durationSeconds": 0,
+      "availability": "available"
+    },
+    {
+      "id": "asset-jiangbei-reference",
+      "name": "江北角色参考，授权状态未确认",
+      "type": "image",
+      "path": "media/jiangbei-reference.png",
+      "sizeBytes": 2281013,
+      "durationSeconds": 0,
+      "availability": "available"
+    },
+    {
+      "id": "asset-xiaoman-reference",
+      "name": "苏小满角色参考，授权状态未确认",
+      "type": "image",
+      "path": "media/xiaoman-reference.png",
+      "sizeBytes": 2273430,
+      "durationSeconds": 0,
+      "availability": "available"
+    }
+  ],
+  "variables": [
+    {
+      "id": "money",
+      "name": "钱",
+      "type": "number",
+      "value": 463
+    },
+    {
+      "id": "trust",
+      "name": "信任",
+      "type": "number",
+      "value": 45
+    },
+    {
+      "id": "truth",
+      "name": "真实",
+      "type": "number",
+      "value": 35
+    },
+    {
+      "id": "boundaryRespect",
+      "name": "边界尊重",
+      "type": "number",
+      "value": 35
+    },
+    {
+      "id": "creativeMomentum",
+      "name": "共同创作",
+      "type": "number",
+      "value": 20
+    },
+    {
+      "id": "pressure",
+      "name": "压力",
+      "type": "number",
+      "value": 20
+    },
+    {
+      "id": "feeHeld",
+      "name": "体验费暂存",
+      "type": "boolean",
+      "value": false
+    },
+    {
+      "id": "feeReturned",
+      "name": "体验费已退回",
+      "type": "boolean",
+      "value": false
+    },
+    {
+      "id": "cameraPausedAtBreakfast",
+      "name": "早餐先于内容",
+      "type": "boolean",
+      "value": false
+    },
+    {
+      "id": "workFaceBoundaryRespected",
+      "name": "工作镜头不露脸",
+      "type": "boolean",
+      "value": false
+    },
+    {
+      "id": "phonePutAway",
+      "name": "手机收起",
+      "type": "boolean",
+      "value": false
+    },
+    {
+      "id": "sharedCreation",
+      "name": "共同创作",
+      "type": "boolean",
+      "value": false
+    }
+  ],
+  "folders": [
+    {
+      "id": "folder-presentations",
+      "name": "呈现资产",
+      "parentId": null
+    },
+    {
+      "id": "folder-references",
+      "name": "角色参考",
+      "parentId": null
+    }
+  ],
+  "tags": [
+    {
+      "id": "tag-placeholder-local",
+      "name": "placeholder-local"
+    },
+    {
+      "id": "tag-source-canon",
+      "name": "source-canon"
+    },
+    {
+      "id": "tag-no-face",
+      "name": "no-camera-safe"
+    }
+  ],
+  "pluginDescriptors": [],
+  "settings": {
+    "timeUnit": "seconds"
+  }
+}

@@ -5,6 +5,7 @@ import {
   type GameEditorApi,
   isAppInfo,
 } from "../../shared/contracts/app-info";
+import { DESKTOP_PROJECT_CHANNELS, type ProjectApi } from "../../shared/contracts/desktop-project";
 
 const appApi = Object.freeze({
   async getInfo(): Promise<AppInfo> {
@@ -17,6 +18,15 @@ const appApi = Object.freeze({
   },
 });
 
-const gameEditorApi: GameEditorApi = Object.freeze({ app: appApi });
+const projectApi: ProjectApi = Object.freeze({
+  chooseDirectory: () => ipcRenderer.invoke(DESKTOP_PROJECT_CHANNELS.open, { mode: "choose" }),
+  create: (projectRoot, document) => ipcRenderer.invoke(DESKTOP_PROJECT_CHANNELS.create, { projectRoot, document }),
+  open: (projectRoot) => ipcRenderer.invoke(DESKTOP_PROJECT_CHANNELS.open, { mode: "open", projectRoot }),
+  save: (projectRoot, document, expectedRevision) => ipcRenderer.invoke(DESKTOP_PROJECT_CHANNELS.save, { projectRoot, document, expectedRevision }),
+  importAsset: (projectRoot) => ipcRenderer.invoke(DESKTOP_PROJECT_CHANNELS.importAsset, { projectRoot }),
+  exportMp4: (projectRoot, assetPath, durationSeconds) => ipcRenderer.invoke(DESKTOP_PROJECT_CHANNELS.exportMp4, { projectRoot, assetPath, durationSeconds }),
+});
+
+const gameEditorApi: GameEditorApi = Object.freeze({ app: appApi, project: projectApi });
 
 contextBridge.exposeInMainWorld("gameEditor", gameEditorApi);

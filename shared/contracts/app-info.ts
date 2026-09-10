@@ -15,6 +15,7 @@ export interface AppInfoApi {
 
 export interface GameEditorApi {
   readonly app: AppInfoApi;
+  readonly project: import("./desktop-project").ProjectApi;
 }
 
 export function isAppInfo(value: unknown): value is AppInfo {

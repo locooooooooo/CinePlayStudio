@@ -1,12 +1,14 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-13T08:43:40Z",
+  "updated_at": "2026-08-07T04:15:00Z",
   "source": {
     "index": "docs/orchestration/index.md",
     "board": "docs/orchestration/current-dispatch-shortlist.md",
     "tasks": [
       "⟦tag:v2|task|m0-desktop-baseline⟧",
-      "⟦tag:v2|task|m0-legacy-lint-baseline⟧"
+      "⟦tag:v2|task|m0-legacy-lint-baseline⟧",
+      "⟦tag:v2|task|p0-1-schema⟧",
+      "⟦tag:v2|task|p0-2-project-storage⟧"
     ],
     "sessions": [
       "⟦tag:v2|session|m0-architecture-owner-01⟧",
@@ -17,20 +19,25 @@
       "⟦tag:v2|session|m0-pm-acceptance-01⟧",
       "⟦tag:v2|session|m0-lint-core-01⟧",
       "⟦tag:v2|session|m0-lint-assets-flow-01⟧",
-      "⟦tag:v2|session|m0-lint-media-ui-01⟧"
+      "⟦tag:v2|session|m0-lint-media-ui-01⟧",
+      "⟦tag:v2|session|p0-general-editor-dispatch-round-2026-08-04⟧",
+      "⟦tag:v2|session|p0-general-editor-readiness-2026-08-04⟧",
+      "⟦tag:v2|session|p0-1-schema-01⟧",
+      "⟦tag:v2|session|p0-2-project-storage-01⟧",
+      "⟦tag:v2|session|ice-01-project-kernel-01⟧"
     ]
   },
   "loop_state": "summarized",
   "dispatch_state": "standby",
   "active_gate": null,
-  "next_dispatch_guard": "keep M1 closed until the verified M0-F submission is committed and the commit is verified",
+  "next_dispatch_guard": "P0-2 is technically verified and its source lock is released; ICE-01 remains blocked by agent runtime 429, and ICE-02 through ICE-09 remain planned_not_dispatched",
   "workers": [
     {
       "identity": "[长工]#架构安全@M0",
       "thread_id": "/root/m0_architecture_security",
       "role": "long-worker",
       "module": "architecture-security",
-      "state": "retained-owner",
+      "state": "blocked",
       "task_tag": "⟦tag:v2|task|m0-desktop-baseline⟧",
       "session_tag": "⟦tag:v2|session|m0-architecture-owner-01⟧",
       "current_gate": null,
@@ -141,9 +148,83 @@
       "retention_reason": null,
       "last_verified_activity": "2026-07-13T06:58:50Z",
       "next_review": null
+    },
+    {
+      "identity": "[短工]#P0规范Schema@P0",
+      "thread_id": "019fccd9-49c0-7c30-96b9-49f72ef0c8a8",
+      "role": "short-worker",
+      "module": "p0-1-schema",
+      "state": "archived",
+      "task_tag": "⟦tag:v2|task|p0-1-schema⟧",
+      "session_tag": "⟦tag:v2|session|p0-1-schema-01⟧",
+      "current_gate": null,
+      "allowed_files": [
+        "shared/contracts/project.ts",
+        "shared/contracts/project.test.ts",
+        "shared/contracts/project-fixtures/**"
+      ],
+      "forbidden": [
+        "existing source and UI",
+        "electron/**",
+        "src/types.ts",
+        "package/lock/config/build files",
+        "docs/**",
+        "Git, credentials and release/publish actions"
+      ],
+      "last_verified_activity": "2026-08-04T13:36:00Z",
+      "next_review": null
+    },
+    {
+      "identity": "[短工]#P0项目存储@P0",
+      "thread_id": "019fda43-ee20-7a33-b528-ff136317775a",
+      "role": "short-worker",
+      "module": "p0-2-project-storage",
+      "state": "archived",
+      "task_tag": "⟦tag:v2|task|p0-2-project-storage⟧",
+      "session_tag": "⟦tag:v2|session|p0-2-project-storage-01⟧",
+      "current_gate": null,
+      "allowed_files": [
+        "src/project/project-repository.ts",
+        "src/project/project-repository.test.ts",
+        "src/project/project-fixtures/**"
+      ],
+      "forbidden": [
+        "shared/contracts/project.ts",
+        "existing source and UI",
+        "electron/**",
+        "package/lock/config/build files",
+        "docs/**",
+        "Git, credentials and release/publish actions"
+      ],
+      "last_verified_activity": "2026-08-07T04:15:00Z",
+      "next_review": null
+    },
+    {
+      "identity": "[长工]#project-kernel@E2",
+      "thread_id": "019fda43-ef63-7e40-abee-4493c8d31da5",
+      "role": "long-worker",
+      "module": "ice-01-project-kernel",
+      "state": "blocked",
+      "task_tag": "⟦tag:v2|task|ice-01-project-kernel⟧",
+      "session_tag": "⟦tag:v2|session|ice-01-project-kernel-01⟧",
+      "current_gate": "agent runtime 429 Too Many Requests",
+      "allowed_files": [
+        "ICE-01 project-kernel surface only after explicit dispatch"
+      ],
+      "forbidden": [
+        "ICE-02 through ICE-09",
+        "unrelated source and UI",
+        "package/lock/config/build files",
+        "docs/**",
+        "Git, credentials and release/publish actions"
+      ],
+      "last_verified_activity": "2026-08-07T03:31:56Z",
+      "next_review": "after gateway availability"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    "ICE-01 retained worker blocked by subagent runtime 429 Too Many Requests"
+  ],
   "workspace_notes": [
     "concurrently created, untracked docs/releases/** is outside all M0-F file locks and excluded from this submission"
   ]

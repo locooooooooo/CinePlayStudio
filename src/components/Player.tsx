@@ -17,6 +17,7 @@ import {
   RotateCcw,
   Repeat,
 } from "lucide-react";
+import { applyAction, evaluateCondition } from "../../shared/interactive/runtime";
 
 type PlayerVariableValue = ProjectVariable["value"];
 
@@ -84,25 +85,6 @@ export default function Player({
     },
     {},
   );
-
-  // Helper to evaluate string conditions like "hackingLevel >= 2"
-  const evaluateCondition = (
-    conditionStr?: string,
-  ): { allowed: boolean; reason?: string } => {
-    if (!conditionStr) return { allowed: true };
-    try {
-      // Safely evaluate simple conditions in the context of variables
-      const func = new Function(
-        ...Object.keys(variablesMap),
-        `return ${conditionStr};`,
-      );
-      const result = func(...Object.values(variablesMap));
-      return { allowed: !!result };
-    } catch (err) {
-      console.error("Condition evaluation error:", err);
-      return { allowed: false, reason: "语法错误或变量未定义" };
-    }
-  };
 
   // Sync video play state with props
   useEffect(() => {
@@ -227,26 +209,10 @@ export default function Player({
   const handleChoiceClick = (targetSceneId: string, actionCode?: string) => {
     setIsTransitioning(true);
 
-    // Evaluate custom script actions on choice
-    if (actionCode) {
-      try {
-        // Simple evaluator sandbox for variable updates
-        const executeAction = new Function(
-          "variables",
-          "onUpdateVariable",
-          `
-          const vars = { ...variables };
-          ${actionCode}
-          Object.keys(vars).forEach(key => {
-            onUpdateVariable(key, vars[key]);
-          });
-        `,
-        );
-        executeAction(variablesMap, onUpdateVariable);
-      } catch (err) {
-        console.error("Choice action trigger failed to evaluate:", err);
-      }
-    }
+    const actionResult = applyAction(actionCode, variablesMap);
+    Object.entries(actionResult.variables).forEach(([name, value]) => {
+      if (variablesMap[name] !== value) onUpdateVariable(name, value);
+    });
 
     // Move to target scene node with smooth crossfade
     setTimeout(() => {
@@ -451,7 +417,10 @@ export default function Player({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl w-full">
               {(activeTriggerClip.content.choices || []).map((choice) => {
-                const { allowed, reason } = evaluateCondition(choice.condition);
+                const { allowed, reason } = evaluateCondition(
+                  choice.condition,
+                  variablesMap,
+                );
 
                 return (
                   <button

@@ -1,10 +1,12 @@
 import { app, BrowserWindow } from "electron";
 import { registerAppInfoIpc } from "./app-info-ipc";
+import { registerProjectIpc } from "./project-ipc";
 import { createMainWindow } from "./window";
 
 let mainWindow: BrowserWindow | null = null;
 let trustedRendererUrl: string | null = null;
 let unregisterAppInfoIpc: (() => void) | null = null;
+let unregisterProjectIpc: (() => void) | null = null;
 
 const hasSingleInstanceLock = app.requestSingleInstanceLock();
 
@@ -31,6 +33,10 @@ if (!hasSingleInstanceLock) {
         getMainWindow: () => mainWindow,
         getTrustedRendererUrl: () => trustedRendererUrl,
       });
+      unregisterProjectIpc = registerProjectIpc({
+        getMainWindow: () => mainWindow,
+        getTrustedRendererUrl: () => trustedRendererUrl,
+      });
 
       await openMainWindow();
 
@@ -51,6 +57,8 @@ if (!hasSingleInstanceLock) {
   app.on("will-quit", () => {
     unregisterAppInfoIpc?.();
     unregisterAppInfoIpc = null;
+    unregisterProjectIpc?.();
+    unregisterProjectIpc = null;
   });
 }
 

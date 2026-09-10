@@ -87,6 +87,9 @@ export interface MediaAsset {
   category: string;
   tags?: string[];
   folderId?: string;
+  projectPath?: string;
+  sizeBytes?: number;
+  availability?: "available" | "missing" | "unauthorized";
 }
 
 export interface EditorPlugin {
