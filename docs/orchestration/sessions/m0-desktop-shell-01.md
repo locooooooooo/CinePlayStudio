@@ -33,4 +33,4 @@
 
 - Runtime smoke found and corrected the sandboxed ESM preload failure.
 - Dev and packaged windows are nonblank and responsive.
-- `window.gameEditor.app.getInfo()` succeeds with `packaged=false` and `packaged=true` respectively.
+- `window.cinePlayStudio.app.getInfo()` succeeds with `packaged=false` and `packaged=true` respectively.

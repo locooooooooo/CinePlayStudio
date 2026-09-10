@@ -1,4 +1,4 @@
-# GameEditor 正式公开版本路线（Roadmap）
+# CinePlayStudio 正式公开版本路线（Roadmap）
 
 ## 文档元数据
 
@@ -42,7 +42,7 @@
 
 ## 2. 1.0 产品定义
 
-`GameEditor / CineFlow Studio` 1.0 是一款面向独立互动叙事、影游和分支视频创作者的 Windows 桌面创作工具。用户必须能够独立完成以下业务闭环：
+`CinePlayStudio / CineFlow Studio` 1.0 是一款面向独立互动叙事、影游和分支视频创作者的 Windows 桌面创作工具。用户必须能够独立完成以下业务闭环：
 
 - **项目管理**：在用户选择的本地目录中创建或打开项目。
 - **资产导入**：导入本地视频、音频、图片和文档。

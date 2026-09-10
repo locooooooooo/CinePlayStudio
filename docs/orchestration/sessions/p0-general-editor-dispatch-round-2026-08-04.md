@@ -3,7 +3,7 @@
 > round: `p0-general-editor-dispatch-2026-08-04`
 > owner: `大管家`
 > state: `absorbed_prepare_only`
-> workspace: `D:\GameEditor`
+> workspace: `D:\CinePlayStudio`
 
 ## Objective
 

@@ -7,7 +7,7 @@
 
 ## Context
 
-GameEditor 要保留现有 React 编辑体验，同时增加 Windows 桌面能力。Web 与 PC 在项目持久化、本地文件授权、媒体子进程、日志、密钥和下载方式上天然不同。如果组件直接判断 `window.gameEditor`、调用 `ipcRenderer` 或按环境拼接 `/api/*`，业务 UI 会形成两套分支，安全校验、错误语义和测试覆盖也会逐步漂移。
+CinePlayStudio 要保留现有 React 编辑体验，同时增加 Windows 桌面能力。Web 与 PC 在项目持久化、本地文件授权、媒体子进程、日志、密钥和下载方式上天然不同。如果组件直接判断 `window.cinePlayStudio`、调用 `ipcRenderer` 或按环境拼接 `/api/*`，业务 UI 会形成两套分支，安全校验、错误语义和测试覆盖也会逐步漂移。
 
 强制 Web 与 PC 支持完全相同的底层能力同样不可行。浏览器不能获得 Electron Main 的文件系统和子进程权限，PC 也不应为了复用 Web 路径而通过本地 Express 代理项目文件。
 
@@ -26,7 +26,7 @@ interface AppCapabilities {
 }
 ```
 
-环境选择只发生在应用 composition root。组件不直接访问 `window.gameEditor`、`ipcRenderer`、Node API、`localStorage` 或桌面专用 `/api/*`，也不通过零散的 `isElectron` 条件改变业务语义。
+环境选择只发生在应用 composition root。组件不直接访问 `window.cinePlayStudio`、`ipcRenderer`、Node API、`localStorage` 或桌面专用 `/api/*`，也不通过零散的 `isElectron` 条件改变业务语义。
 
 能力实现边界如下：
 
@@ -57,7 +57,7 @@ Web adapter 通过浏览器存储、`fetch` 和 Blob download 实现其可支持
 
 ## Rejected Alternatives
 
-### 在每个组件中使用 `isElectron` 或 `window.gameEditor`
+### 在每个组件中使用 `isElectron` 或 `window.cinePlayStudio`
 
 拒绝。环境分支会散落在 UI，难以统一错误、加载、取消和测试语义。
 
@@ -86,7 +86,7 @@ Web adapter 通过浏览器存储、`fetch` 和 Blob download 实现其可支持
 本 ADR 在 M0 只形成决策证据，不提前实现 M1 capability adapters。
 
 - 为每个 capability 建立共享 contract tests，并分别运行 Web adapter 与 PC adapter；unsupported 是明确的合格结果，不是异常遗漏。
-- 静态检查 React 组件，禁止新增 `window.gameEditor`、`ipcRenderer`、Node API、直接 `localStorage` 和桌面专用 fetch 分支。
+- 静态检查 React 组件，禁止新增 `window.cinePlayStudio`、`ipcRenderer`、Node API、直接 `localStorage` 和桌面专用 fetch 分支。
 - PC 集成测试必须证明 Renderer 没有 Node 全局，Preload 不暴露通用 IPC，未知 channel、非法 payload 和未知 sender 被拒绝并记录。
 - Web 测试必须证明 unsupported 能力返回 `UNSUPPORTED_CAPABILITY`，不会生成模拟日志、示例 URL 或假完成状态。
 - 同一 `ProjectDocument` fixture 在两个 adapter 边界使用同一 schema；错误码与取消、进度和完成语义保持一致。

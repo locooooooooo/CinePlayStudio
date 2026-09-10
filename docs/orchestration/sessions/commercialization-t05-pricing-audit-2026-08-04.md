@@ -4,7 +4,7 @@ task_id: `T05`
 status: `blocked`（控制面仍为 `prepare-only`）
 owner: `T05 长工替补`
 scope: 只审计现有三层定价实验包、验收门槛、证据边界和收入分类；不修改产品源码。
-changed_files_or_external_artifacts: `D:\GameEditor\docs\orchestration\sessions\commercialization-t05-pricing-audit-2026-08-04.md`；无外部产物。
+changed_files_or_external_artifacts: `D:\CinePlayStudio\docs\orchestration\sessions\commercialization-t05-pricing-audit-2026-08-04.md`；无外部产物。
 
 evidence:
 

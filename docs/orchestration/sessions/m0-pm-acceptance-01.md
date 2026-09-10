@@ -16,14 +16,14 @@
 - Added deterministic local `electronDist` packaging after the default unpack path stalled twice.
 - Added TypeScript source include/exclude boundaries to remove generated-output races.
 - Passed `npm ci --dry-run`, typecheck before and after build, 3/3 tests, Electron build, NSIS packaging, packaged FFprobe, and M0-targeted lint/format.
-- Passed dev and packaged Playwright Electron smoke with nonblank 1424x835 windows and `gameEditor.app.getInfo()`.
-- Rejected an initial dev smoke because port 5173 belonged to another workspace; reran GameEditor on the isolated 5193 server and captured the correct CineFlow Renderer evidence.
+- Passed dev and packaged Playwright Electron smoke with nonblank 1424x835 windows and `CinePlayStudio.app.getInfo()`.
+- Rejected an initial dev smoke because port 5173 belonged to another workspace; reran CinePlayStudio on the isolated 5193 server and captured the correct CineFlow Renderer evidence.
 - Established and verified a full-repo Prettier baseline before the initial Git commit.
 - Absorbed all three M0-F callbacks and verified full lint, typecheck, format, tests, build, semantic diff review, and suppression scans.
 
 ## Evidence
 
-- installer: `release/GameEditor-0.1.0-Setup.exe`, 142954621 bytes
+- installer: `release/CinePlayStudio-0.1.0-Setup.exe`, 142954621 bytes
 - installer SHA256: `B79A0078FABFAC6218BD47B8863D9B3CF4CF4C63837EA603FE1535DD28490E2D`
 - unpacked executable SHA256: `CD62BEB1452661EB14C8312A9CF2438AE60B791A1DFCC8E20B551B813C64134F`
 - unpacked size: 572.27 MB across 161 files

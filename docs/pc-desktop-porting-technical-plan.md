@@ -1,4 +1,4 @@
-# GameEditor PC Desktop Porting Technical Plan
+# CinePlayStudio PC Desktop Porting Technical Plan
 
 > - 文档状态：Execution Baseline Draft 2
 > - 目标平台：Windows 10/11 x64
@@ -77,7 +77,7 @@ MVP 不包含真实多轨视频渲染、OSS、自动更新和任意 JavaScript �
 项目创建时必须让用户选择位置，或使用可配置的默认项目根目录。项目目录建议使用：
 
 ```text
-<user-selected>/<project-name>.gameeditor/
+<user-selected>/<project-name>.CinePlayStudio/
   project.json
   assets/
     originals/
@@ -91,7 +91,7 @@ MVP 不包含真实多轨视频渲染、OSS、自动更新和任意 JavaScript �
 Electron `app.getPath('userData')` 只保存应用级数据：
 
 ```text
-%APPDATA%/GameEditor/
+%APPDATA%/CinePlayStudio/
   config.json
   recent-projects.json
   logs/
@@ -124,7 +124,7 @@ Electron `app.getPath('userData')` 只保存应用级数据：
 
 ### D6：Web/PC 双形态只在适配器层分叉
 
-React 组件只依赖以下能力接口，不直接判断 `window.gameEditor`，不直接拼 `/api/*`：
+React 组件只依赖以下能力接口，不直接判断 `window.cinePlayStudio`，不直接拼 `/api/*`：
 
 ```ts
 interface AppCapabilities {
@@ -167,7 +167,7 @@ flowchart LR
 
 ### 4.2 Preload
 
-- 使用 `contextBridge.exposeInMainWorld` 暴露 `window.gameEditor`。
+- 使用 `contextBridge.exposeInMainWorld` 暴露 `window.cinePlayStudio`。
 - 使用共享 schema 校验输入输出。
 - 事件订阅返回取消函数，防止监听器泄漏。
 - 不暴露 channel 名称、`send`、`on` 或 `invoke` 等通用逃生口。
@@ -396,7 +396,7 @@ interface ProjectDocument {
 - 删除前再次验证目标位于授权项目根目录，并默认移动到项目内回收区。
 - 必须覆盖中文、空格、超长文件名、大小写差异和只读文件测试。
 
-### 8.3 `gameeditor://` 协议
+### 8.3 `cinePlayStudio://` 协议
 
 - 在 `app.whenReady()` 前调用 `protocol.registerSchemesAsPrivileged`。
 - Ready 后使用当前 Electron 推荐的 `protocol.handle` 注册处理器。
@@ -409,7 +409,7 @@ interface ProjectDocument {
 Preload API 建议按稳定领域划分：
 
 ```ts
-window.gameEditor = {
+window.cinePlayStudio = {
   app: { getInfo, openExternal },
   project: {
     listRecent,
@@ -592,8 +592,8 @@ Node `vm` 不是安全隔离边界，禁止把它描述或实现为不可信插�
 `electron-builder.yml` 基线：
 
 ```yaml
-appId: com.gameeditor.desktop
-productName: GameEditor
+appId: com.cineplaystudio.desktop
+productName: CinePlayStudio
 directories:
   output: release
 asar: true
@@ -666,7 +666,7 @@ node scripts/verify-packaged-ffprobe.mjs
 
 - 当前 UI 在 dev 和 packaged 模式都可打开。
 - Renderer 无 Node 全局，未知 IPC 和非法 payload 被拒绝并记录。
-- 组件中不新增 `window.gameEditor`、`ipcRenderer` 或桌面专用 fetch 判断。
+- 组件中不新增 `window.cinePlayStudio`、`ipcRenderer` 或桌面专用 fetch 判断。
 
 ### M2：规范项目与可靠落盘，3-5 天
 
@@ -690,7 +690,7 @@ node scripts/verify-packaged-ffprobe.mjs
 交付：
 
 - 流式导入、hash、探测、缩略图和删除保护。
-- `gameeditor://` 安全协议和 range request。
+- `cinePlayStudio://` 安全协议和 range request。
 - 项目相对路径与资产 ID 映射。
 - 大资产导入和播放性能测量。
 

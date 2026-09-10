@@ -1,5 +1,5 @@
-appId: com.gameeditor.desktop
-productName: GameEditor
+appId: com.cineplaystudio.desktop
+productName: CinePlayStudio
 electronDist: node_modules/electron/dist
 directories:
   output: release

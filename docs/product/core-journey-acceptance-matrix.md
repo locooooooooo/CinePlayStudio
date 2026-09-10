@@ -1,4 +1,4 @@
-# GameEditor 核心用户旅程验收矩阵
+# CinePlayStudio 核心用户旅程验收矩阵
 
 > task_id: `T04`
 > status: `prepared`

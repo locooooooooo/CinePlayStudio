@@ -5,7 +5,7 @@ describe("app info contract", () => {
   it("accepts the exact app info shape", () => {
     expect(
       isAppInfo({
-        name: "GameEditor",
+        name: "CinePlayStudio",
         version: "0.1.0",
         platform: "win32",
         packaged: false,
@@ -16,14 +16,14 @@ describe("app info contract", () => {
   it("rejects widened or malformed responses", () => {
     expect(
       isAppInfo({
-        name: "GameEditor",
+        name: "CinePlayStudio",
         version: "0.1.0",
         platform: "win32",
         packaged: false,
         secret: "unexpected",
       }),
     ).toBe(false);
-    expect(isAppInfo({ name: "GameEditor" })).toBe(false);
+    expect(isAppInfo({ name: "CinePlayStudio" })).toBe(false);
   });
 
   it("normalizes non-desktop platforms without widening the contract", () => {

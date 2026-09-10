@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from "electron";
 import {
   APP_INFO_CHANNEL,
   type AppInfo,
-  type GameEditorApi,
+  type CinePlayStudioApi,
   isAppInfo,
 } from "../../shared/contracts/app-info";
 import { DESKTOP_PROJECT_CHANNELS, type ProjectApi } from "../../shared/contracts/desktop-project";
@@ -27,6 +27,6 @@ const projectApi: ProjectApi = Object.freeze({
   exportMp4: (projectRoot, assetPath, durationSeconds) => ipcRenderer.invoke(DESKTOP_PROJECT_CHANNELS.exportMp4, { projectRoot, assetPath, durationSeconds }),
 });
 
-const gameEditorApi: GameEditorApi = Object.freeze({ app: appApi, project: projectApi });
+const cinePlayStudioApi: CinePlayStudioApi = Object.freeze({ app: appApi, project: projectApi });
 
-contextBridge.exposeInMainWorld("gameEditor", gameEditorApi);
+contextBridge.exposeInMainWorld("cinePlayStudio", cinePlayStudioApi);

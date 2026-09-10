@@ -13,7 +13,7 @@ export interface AppInfoApi {
   getInfo(): Promise<AppInfo>;
 }
 
-export interface GameEditorApi {
+export interface CinePlayStudioApi {
   readonly app: AppInfoApi;
   readonly project: import("./desktop-project").ProjectApi;
 }

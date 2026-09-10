@@ -1,4 +1,4 @@
-# GameEditor 商业化长工派发回执
+# CinePlayStudio 商业化长工派发回执
 
 > round: `commercialization-dispatch-2026-08-04`
 > owner: 大管家

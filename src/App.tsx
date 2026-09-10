@@ -307,7 +307,7 @@ export default function App() {
   };
 
   const handleChooseProjectDirectory = async () => {
-    const api = window.gameEditor?.project;
+    const api = window.cinePlayStudio?.project;
     if (!api) {
       setSaveStatus("error");
       return;
@@ -333,9 +333,9 @@ export default function App() {
   };
 
   const handleImportRealAsset = async (): Promise<MediaAsset | null> => {
-    if (!projectRoot || !window.gameEditor?.project) return null;
+    if (!projectRoot || !window.cinePlayStudio?.project) return null;
     try {
-      const imported = await window.gameEditor.project.importAsset(projectRoot);
+      const imported = await window.cinePlayStudio.project.importAsset(projectRoot);
       if (!imported) return null;
       const asset: MediaAsset = {
         id: `asset-${Date.now()}`,
@@ -361,13 +361,13 @@ export default function App() {
 
   const handleExportCurrentSceneMp4 = async () => {
     const asset = assets.find((item) => item.type === "video" && item.projectPath);
-    if (!projectRoot || !asset?.projectPath || !window.gameEditor?.project) {
+    if (!projectRoot || !asset?.projectPath || !window.cinePlayStudio?.project) {
       setSaveStatus("error");
       alert("请先连接项目目录，并导入一条本地视频素材。");
       return;
     }
     try {
-      const result = await window.gameEditor.project.exportMp4(
+      const result = await window.cinePlayStudio.project.exportMp4(
         projectRoot,
         asset.projectPath,
         activeScene.duration,
@@ -534,9 +534,9 @@ export default function App() {
         });
 
         setSaveStatus("saved");
-        if (projectRoot && projectRevision && window.gameEditor?.project) {
+        if (projectRoot && projectRevision && window.cinePlayStudio?.project) {
           try {
-            const snapshot = await window.gameEditor.project.save(
+            const snapshot = await window.cinePlayStudio.project.save(
               projectRoot,
               buildCanonicalDocument(),
               projectRevision,

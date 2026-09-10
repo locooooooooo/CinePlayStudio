@@ -306,7 +306,7 @@ describe("ProjectRepository", () => {
 
   it("round-trips create and save through a real user-owned directory", async () => {
     const root = await fs.mkdtemp(
-      path.join(os.tmpdir(), "gameeditor-project-"),
+      path.join(os.tmpdir(), "cineplaystudio-project-"),
     );
 
     try {

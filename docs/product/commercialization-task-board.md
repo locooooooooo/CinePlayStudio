@@ -1,4 +1,4 @@
-# GameEditor 商业化任务拆解板
+# CinePlayStudio 商业化任务拆解板
 
 > 任务板状态：2026-08-04 已完成一轮 prepare-only 长工派发与回执吸收  
 > 更新时间：2026-08-04  

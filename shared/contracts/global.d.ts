@@ -1,8 +1,8 @@
-import type { GameEditorApi } from "./app-info";
+import type { CinePlayStudioApi } from "./app-info";
 
 declare global {
   interface Window {
-    readonly gameEditor: GameEditorApi;
+    readonly cinePlayStudio: CinePlayStudioApi;
   }
 }
 

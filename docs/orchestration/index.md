@@ -1,4 +1,4 @@
-# GameEditor LPS Control Index
+# CinePlayStudio LPS Control Index
 
 updated_at: 2026-08-07T04:15:00Z
 

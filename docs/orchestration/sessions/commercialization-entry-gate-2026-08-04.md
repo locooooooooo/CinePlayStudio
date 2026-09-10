@@ -1,4 +1,4 @@
-# GameEditor 商业化入口闸门快照
+# CinePlayStudio 商业化入口闸门快照
 
 > task_id: `T00`
 > status: `prepare-only`
@@ -9,7 +9,7 @@
 
 ## 1. 监督目标
 
-确认 GameEditor 后续商业化长工可以在哪个边界内工作，并为大管家监督 T01 及后续任务提供当前状态基线。
+确认 CinePlayStudio 后续商业化长工可以在哪个边界内工作，并为大管家监督 T01 及后续任务提供当前状态基线。
 
 本快照是控制面证据，不代表产品能力已经完成、发布或可售卖。文件存在、长工回报和演示结果均不能替代真实验收证据。
 
@@ -34,7 +34,7 @@
 | --------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `git branch --show-current`       | `main`                                                                                                   |
 | `git rev-parse HEAD`              | `a80d91bfcd2e2b30b09ee8d298f4117ba12c3faf`                                                               |
-| `git log -3 --oneline --decorate` | `a80d91b refactor: close legacy lint baseline`；`dd55554 feat: establish GameEditor desktop M0 baseline` |
+| `git log -3 --oneline --decorate` | `a80d91b refactor: close legacy lint baseline`；`dd55554 feat: establish CinePlayStudio desktop M0 baseline` |
 
 ### 3.2 Dirty/untracked 范围
 

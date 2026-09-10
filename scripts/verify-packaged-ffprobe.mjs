@@ -30,15 +30,15 @@ function option(name) {
 const root = process.cwd();
 const binary =
   option("--binary") ??
-  process.env.GAMEEDITOR_FFPROBE ??
+  process.env.CINEPLAYSTUDIO_FFPROBE ??
   path.join(root, "release", "win-unpacked", "resources", "bin", "ffprobe.exe");
 const ffmpeg =
   option("--ffmpeg") ??
-  process.env.GAMEEDITOR_FFMPEG ??
+  process.env.CINEPLAYSTUDIO_FFMPEG ??
   path.join(root, "release", "win-unpacked", "resources", "bin", "ffmpeg.exe");
 const fixture = option("--fixture");
 const tempRoot = await fs.mkdtemp(
-  path.join(os.tmpdir(), "GameEditor FFprobe 中文 空格-"),
+  path.join(os.tmpdir(), "CinePlayStudio FFprobe 中文 空格-"),
 );
 const input = fixture
   ? path.resolve(fixture)
@@ -94,6 +94,6 @@ try {
     }),
   );
 } finally {
-  if (process.env.GAMEEDITOR_KEEP_FFPROBE_FIXTURE !== "1")
+  if (process.env.CINEPLAYSTUDIO_KEEP_FFPROBE_FIXTURE !== "1")
     await fs.rm(tempRoot, { recursive: true, force: true });
 }

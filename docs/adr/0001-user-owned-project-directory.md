@@ -7,18 +7,18 @@
 
 ## Context
 
-GameEditor 项目会包含视频、音频、图片、代理文件、缩略图和导出物，单个项目可能达到数 GB。Electron 的 `app.getPath('userData')` 位于 roaming AppData 语义下，适合应用配置和小型状态，不适合作为大型项目与媒体资产的默认存储位置。
+CinePlayStudio 项目会包含视频、音频、图片、代理文件、缩略图和导出物，单个项目可能达到数 GB。Electron 的 `app.getPath('userData')` 位于 roaming AppData 语义下，适合应用配置和小型状态，不适合作为大型项目与媒体资产的默认存储位置。
 
 项目还必须满足用户可见、可复制、可备份、可迁移和可在应用重装后继续使用。若项目数据散落在 `userData`、浏览器存储和外部绝对路径中，这些要求无法形成可验证的所有权边界。
 
 ## Decision
 
-项目是用户选择位置中的独立目录，目录名使用 `<project-name>.gameeditor` 后缀。应用可以提供一个由用户配置的默认项目根目录，但不能把 `userData` 作为项目根目录或大型资产的隐式落点。
+项目是用户选择位置中的独立目录，目录名使用 `<project-name>.CinePlayStudio` 后缀。应用可以提供一个由用户配置的默认项目根目录，但不能把 `userData` 作为项目根目录或大型资产的隐式落点。
 
 规范目录结构为：
 
 ```text
-<user-selected>/<project-name>.gameeditor/
+<user-selected>/<project-name>.CinePlayStudio/
   project.json
   assets/
     originals/
@@ -32,7 +32,7 @@ GameEditor 项目会包含视频、音频、图片、代理文件、缩略图和
 `userData` 只保存应用级数据：
 
 ```text
-%APPDATA%/GameEditor/
+%APPDATA%/CinePlayStudio/
   config.json
   recent-projects.json
   logs/

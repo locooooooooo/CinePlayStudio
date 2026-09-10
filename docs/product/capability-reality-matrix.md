@@ -156,7 +156,7 @@ type CapabilityResult<T> =
 
 ### 4.1 当前明确 unsupported 或关闭的能力
 
-- M1 项目目录、规范 `ProjectDocument`、保存协调器、迁移、恢复、资产复制、`gameeditor://`、媒体 job、真实 FFmpeg render、OSS、updater 和插件执行均保持关闭。
+- M1 项目目录、规范 `ProjectDocument`、保存协调器、迁移、恢复、资产复制、`cinePlayStudio://`、媒体 job、真实 FFmpeg render、OSS、updater 和插件执行均保持关闭。
 - Web 不得把浏览器 `localStorage` 宣称为付费项目的真实目录保存；不得把 FileReader 后的元数据登记宣称为本地资产导入。
 - 任何 probe/render 失败不得返回模拟 metadata、模拟日志、示例 URL 或 `success: true` 作为正式结果。
 - 任何 Web/PC 入口未有实际 adapter/IPC contract 和相应测试时，必须返回 `UNSUPPORTED_CAPABILITY` 或 `needs_verification`，不能根据 UI 按钮、依赖包或旧包推断支持。

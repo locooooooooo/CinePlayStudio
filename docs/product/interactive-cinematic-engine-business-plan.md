@@ -375,7 +375,7 @@ flowchart TB
 
 ## 13. 需要管理层确认的决策
 
-1. 品牌是否使用 `CineFlow Engine`，或保留 `GameEditor` 作为研发代号。
+1. 品牌是否使用 `CineFlow Engine`，或保留 `CinePlayStudio` 作为研发代号。
 2. 首个垂直内容类型：互动短剧、真人影游、品牌互动广告或 IP 番外。
 3. 首期是否坚持“Windows 编辑器 + Web Runtime”，并把 Android/PC Player 设为后续门槛功能。
 4. 是否接受“生成媒体默认可选且独立计费”，而不是把 AI 生成承诺为基础功能。
